@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: auth-service
+
+auth:
+  security:
+    brute-force:
+      login:
+        max-attempts: 5
+        ban-duration-minutes: 15
+        user-attempt-key-prefix: LOGIN_FAILED_ATTEMPT_USER_
+        user-block-key-prefix: LOGIN_BLOCKED_USER_
+        ip-attempt-key-prefix: LOGIN_FAILED_ATTEMPT_IP_
+        ip-block-key-prefix: LOGIN_BLOCKED_IP_
+      register:
+        max-attempts: 5
+        ban-duration-minutes: 15
+        ip-attempt-key-prefix: REGISTER_FAILED_ATTEMPT_IP_
+        ip-block-key-prefix: REGISTER_BLOCKED_IP_
+
