@@ -1,0 +1,18 @@
+HELP.md
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+workspace.xml
+
+### Build directories ###
+.mvn/wrapper/maven-wrapper.properties
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+### Certs directories ###
+src/main/resources/certs/
