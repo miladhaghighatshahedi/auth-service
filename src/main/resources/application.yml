@@ -18,3 +18,6 @@ auth:
         ip-attempt-key-prefix: REGISTER_FAILED_ATTEMPT_IP_
         ip-block-key-prefix: REGISTER_BLOCKED_IP_
 
+rsa:
+  public-key: classpath:certs/public.pem
+  private-key: classpath:certs/private.pem
