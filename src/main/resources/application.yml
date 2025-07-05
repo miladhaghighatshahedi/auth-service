@@ -21,3 +21,11 @@ auth:
 rsa:
   public-key: classpath:certs/public.pem
   private-key: classpath:certs/private.pem
+
+token:
+  access-token-expiry-hours: 1
+  refresh-token-expiry-hours: 72
+  access-token-issuer: http://localhost:8081
+  access-token-claim-type: access_token
+  refresh-token-issuer: http://localhost:8081
+  refresh-token-claim-type: refresh_token
