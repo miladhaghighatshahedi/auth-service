@@ -1,5 +1,7 @@
 package com.mhs.authService.token;
 
+import com.mhs.authService.exception.error.InvalidTokenException;
+import com.mhs.authService.token.dto.RefreshTokenRequest;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -64,6 +66,54 @@ public class JwtTokenUtil {
                 .build();
 
         return this.jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public Jwt validateRefreshToken(RefreshTokenRequest refreshTokenRequest, String deviceId, String userAgent, String ipAddress){
+
+        String rawRefreshToken = refreshTokenRequest.refreshToken();
+        Jwt decodedJwt = jwtDecoder.decode(rawRefreshToken);
+
+        validateRefreshTokenType(decodedJwt);
+        validateRefreshTokenExpiry(decodedJwt);
+        validateTokenFingerPrints(decodedJwt,deviceId,userAgent,ipAddress);
+
+        return decodedJwt;
+    }
+
+    public void validateRefreshTokenType(Jwt decodedJwt){
+        if (!tokenProperties.getRefreshTokenClaimType().equals(decodedJwt.getClaimAsString("type"))) {
+            throw new JwtException("error: Invalid Token Type!");
+        }
+    }
+
+    public void validateRefreshTokenExpiry(Jwt decodedJwt){
+        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
+            throw new InvalidTokenException("error: Refresh token is expired or revoked!");
+        }
+    }
+
+    public void validateTokenFingerPrints(Jwt decodedJwt,String deviceId,String userAgent,String ipAddress){
+
+        String tokenDeviceId  = decodedJwt.getClaimAsString("X-Device-Id");
+        String tokenUserAgent = decodedJwt.getClaimAsString("User-Agent");
+        String tokenIpAddress = decodedJwt.getClaimAsString("Ip-Address");
+        String issuer = decodedJwt.getIssuer().toString();
+
+        if (!deviceId.equals(tokenDeviceId)) {
+            throw new InvalidTokenException("Device mismatch – refresh token misuse suspected!");
+        }
+
+        if (!userAgent.equals(tokenUserAgent)) {
+            throw new InvalidTokenException("UserAgent mismatch – refresh token misuse suspected!");
+        }
+
+        if (!ipAddress.equals(tokenIpAddress)) {
+            throw new InvalidTokenException("IpAddress mismatch – refresh token misuse suspected!");
+        }
+
+        if(!issuer.equals(tokenProperties.getRefreshTokenIssuer())){
+            throw new InvalidTokenException("Issuer mismatch – refresh token misuse suspected!");
+        }
     }
 
 }
