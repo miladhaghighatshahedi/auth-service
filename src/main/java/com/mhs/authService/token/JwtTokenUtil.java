@@ -2,6 +2,8 @@ package com.mhs.authService.token;
 
 import com.mhs.authService.exception.error.InvalidTokenException;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
+import com.mhs.authService.token.model.RefreshTokenService;
+import com.mhs.authService.util.hash.HashService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -20,6 +22,8 @@ public class JwtTokenUtil {
     private final JwtEncoder jwtEncoder;
     private final JwtDecoder jwtDecoder;
     private final TokenProperties tokenProperties;
+    private final HashService hashService;
+    private final RefreshTokenService refreshTokenService;
 
     public String generateAccessToken(Authentication authentication, String deviceId, String userAgent, String ipAddress) {
         Instant now = Instant.now();
@@ -75,6 +79,7 @@ public class JwtTokenUtil {
 
         validateRefreshTokenType(decodedJwt);
         validateRefreshTokenExpiry(decodedJwt);
+        validateRefreshTokenFingerPrintsExpiryAgainstDB(hashService.hashToken(rawRefreshToken),deviceId,userAgent,ipAddress);
         validateTokenFingerPrints(decodedJwt,deviceId,userAgent,ipAddress);
 
         return decodedJwt;
@@ -89,6 +94,13 @@ public class JwtTokenUtil {
     public void validateRefreshTokenExpiry(Jwt decodedJwt){
         if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
             throw new InvalidTokenException("error: Refresh token is expired or revoked!");
+        }
+    }
+
+    public void validateRefreshTokenFingerPrintsExpiryAgainstDB(String hashedRefreshToken,String deviceId,String userAgent,String ipAddress){
+        boolean validRefreshTokenInDB = refreshTokenService.isTokenValid(hashedRefreshToken, deviceId, userAgent, ipAddress);
+        if (!validRefreshTokenInDB) {
+            throw new InvalidTokenException("error: Refresh token revoked or not valid for this device!");
         }
     }
 
