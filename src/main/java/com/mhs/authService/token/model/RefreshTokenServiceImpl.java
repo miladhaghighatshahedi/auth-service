@@ -19,7 +19,7 @@ class RefreshTokenServiceImpl implements RefreshTokenService {
     @Override
     @Transactional
     public void saveRefreshToken( String username,
-                                  String hashedToken,
+                                  String hashedRefreshToken,
                                   String deviceId,
                                   String userAgent,
                                   String ipAddress,
@@ -29,27 +29,33 @@ class RefreshTokenServiceImpl implements RefreshTokenService {
         User returnedUser = userService.findByUsername(username);
         refreshTokenRepository.deleteByUserAndDeviceId(returnedUser, deviceId);
 
-
         RefreshToken refreshToken = refreshTokenFactory.create( returnedUser,
-                                                                hashedToken,
+                                                                hashedRefreshToken,
                                                                 deviceId,
                                                                 userAgent,
                                                                 ipAddress,
                                                                 refreshTokenIssuedDate,
                                                                 refreshTokenExpiryDate,
-                                                             false);
+                                                                false);
 
         refreshTokenRepository.save(refreshToken);
     }
 
     @Override
     @Transactional
-    public void revokeToken(String refreshToken) {
+    public void revokeToken(String hashedRefreshToken) {
+        refreshTokenRepository.findByHashedToken(hashedRefreshToken).ifPresent(refreshTokenRepository::delete);
     }
 
     @Override
-   public boolean isTokenValid(String token, String deviceId, String userAgent, String ipAddress) {
-        return true;
+   public boolean isTokenValid(String hashedRefreshToken, String deviceId, String userAgent, String ipAddress) {
+        return refreshTokenRepository.findByHashedToken(hashedRefreshToken)
+                    .filter(refreshtoken -> !refreshtoken.isRevoked())
+                    .filter(refreshtoken -> !refreshtoken.getExpiryDate().isBefore(Instant.now()))
+                    .filter(refreshtoken -> refreshtoken.getDeviceId().equals(deviceId))
+                    .filter(refreshtoken -> refreshtoken.getUserAgent().equals(userAgent))
+                    .filter(refreshtoken -> refreshtoken.getIpAddress().equals(ipAddress))
+                    .isPresent();
    }
 
 }
