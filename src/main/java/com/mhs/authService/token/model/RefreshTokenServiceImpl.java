@@ -1,11 +1,13 @@
 package com.mhs.authService.token.model;
 
+import com.mhs.authService.iam.user.User;
 import com.mhs.authService.iam.user.UserService;
 import com.mhs.authService.token.model.factory.RefreshTokenFactory;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -24,6 +26,21 @@ class RefreshTokenServiceImpl implements RefreshTokenService {
                                   String ipAddress,
                                   Instant refreshTokenIssuedDate,
                                   Instant refreshTokenExpiryDate) {
+
+        User returnedUser = userService.findByUsername(username);
+        List<RefreshToken> existingRefreshTokens = refreshTokenRepository.findAllByUserAndDeviceId(returnedUser, deviceId);
+        refreshTokenRepository.deleteAll(existingRefreshTokens);
+
+        RefreshToken refreshToken = refreshTokenFactory.create( returnedUser,
+                                                                hashedToken,
+                                                                deviceId,
+                                                                userAgent,
+                                                                ipAddress,
+                                                                refreshTokenIssuedDate,
+                                                                refreshTokenExpiryDate,
+                                                             false);
+
+        refreshTokenRepository.save(refreshToken);
     }
 
     @Override

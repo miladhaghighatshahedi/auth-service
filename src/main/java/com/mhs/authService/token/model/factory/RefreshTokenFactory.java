@@ -8,7 +8,7 @@ import java.time.Instant;
 @Component
 public class RefreshTokenFactory {
 
-	public RefreshToken save( User user,
+	public RefreshToken create( User user,
 	                          String hashedToken,
 	                          String deviceId,
 	                          String userAgent,
