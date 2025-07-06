@@ -7,7 +7,6 @@ import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
-import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -28,8 +27,8 @@ class RefreshTokenServiceImpl implements RefreshTokenService {
                                   Instant refreshTokenExpiryDate) {
 
         User returnedUser = userService.findByUsername(username);
-        List<RefreshToken> existingRefreshTokens = refreshTokenRepository.findAllByUserAndDeviceId(returnedUser, deviceId);
-        refreshTokenRepository.deleteAll(existingRefreshTokens);
+        refreshTokenRepository.deleteByUserAndDeviceId(returnedUser, deviceId);
+
 
         RefreshToken refreshToken = refreshTokenFactory.create( returnedUser,
                                                                 hashedToken,
