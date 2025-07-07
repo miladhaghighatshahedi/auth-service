@@ -31,11 +31,12 @@ public class RoleServiceImpl implements RoleService {
             try {
                     Role role = new Role();
                     role.setName(name);
-                    return  roleRepository.save(role);
+                    return roleRepository.save(role);
                 } catch (DataIntegrityViolationException exception) {
-                        return roleRepository.findByName(name)
-                                .orElseThrow(() -> new EntityCreationException("error: Unable to create role."));
-                        }
+                     return roleRepository.findByName(name)
+                     .orElseThrow(() -> new EntityCreationException(
+                             String.format("error:Failed to create or retrieve role '%s' due to a conflict.", name)));
+                    }
         });
     }
 
