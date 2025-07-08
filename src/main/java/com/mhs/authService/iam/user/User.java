@@ -1,11 +1,10 @@
 package com.mhs.authService.iam.user;
 
-import com.mhs.authService.enums.UsernameType;
+import com.mhs.authService.iam.user.enums.UsernameType;
 import com.mhs.authService.iam.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
-
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,8 +12,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "tbl_credential",uniqueConstraints = {@UniqueConstraint(columnNames = "username")})
+@Builder
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
@@ -51,5 +50,9 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles = new HashSet<>();
+
+    public void addRole(Role role) {
+        this.roles.add(role);
+    }
 
 }
