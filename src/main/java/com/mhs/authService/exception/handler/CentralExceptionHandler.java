@@ -1,9 +1,6 @@
 package com.mhs.authService.exception.handler;
 
-import com.mhs.authService.exception.error.DuplicateEntityException;
-import com.mhs.authService.exception.error.EntityCreationException;
-import com.mhs.authService.exception.error.InvalidTokenException;
-import com.mhs.authService.exception.error.RateLimitExceededException;
+import com.mhs.authService.exception.error.*;
 import com.mhs.authService.exception.model.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +32,16 @@ public class CentralExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
 	}
 
+	@ExceptionHandler(RegistrationException.class)
+	public ResponseEntity<ExceptionResponse> handleRegistrationException(RegistrationException exception, WebRequest request) {
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
+
 	@ExceptionHandler(InvalidTokenException.class)
 	public ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
@@ -44,8 +51,5 @@ public class CentralExceptionHandler {
 	public ResponseEntity<String> handleRateLimitExceededException(RateLimitExceededException ex) {
 		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
 	}
-
-
-
 
 }
