@@ -2,11 +2,11 @@ package com.mhs.authService.authentication.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @AllArgsConstructor
-public class ClientIpService {
+public class IpAddressResolverService {
 
     private final IpAddressResolver ipAddressResolver;
 

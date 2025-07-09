@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 @Component
-public class XFHeaderIpAddressResolver implements IpAddressResolver {
+class XFHeaderIpAddressResolver implements IpAddressResolver {
 
     @Override
     public String resolve(HttpServletRequest httpServletRequest) {
