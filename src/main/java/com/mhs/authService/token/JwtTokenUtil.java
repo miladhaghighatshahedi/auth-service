@@ -1,3 +1,18 @@
+/*
+ * Copyright 2025-2026 the original author.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.mhs.authService.token;
 
 import com.mhs.authService.exception.error.InvalidTokenException;
@@ -6,13 +21,24 @@ import com.mhs.authService.token.model.RefreshTokenService;
 import com.mhs.authService.util.hash.HashService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Component;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
+
+/**
+ *
+ * @author Milad Haghighat Shahedi
+ */
 
 @Component
 @Data
@@ -126,6 +152,21 @@ public class JwtTokenUtil {
         if(!issuer.equals(tokenProperties.getRefreshTokenIssuer())){
             throw new InvalidTokenException("Issuer mismatch – refresh token misuse suspected!");
         }
+    }
+
+    public Authentication buildAuthenticationFromJwt(Jwt decodedJwt){
+
+        String username = decodedJwt.getSubject();
+        String scope = decodedJwt.getClaimAsString("scope");
+
+        List<GrantedAuthority> authorities = Arrays.stream(scope.split(" "))
+                .filter(s -> !s.isBlank())
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+
+        UserDetails principal = new User(username, "", authorities);
+        return new UsernamePasswordAuthenticationToken(principal, null, authorities);
+
     }
 
 }
