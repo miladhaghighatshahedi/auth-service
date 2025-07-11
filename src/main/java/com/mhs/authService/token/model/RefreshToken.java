@@ -23,6 +23,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.UuidGenerator;
 import java.time.Instant;
+import java.util.UUID;
 
 /**
  *
@@ -39,8 +40,8 @@ public class RefreshToken {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)
-    @Column(name = "tokene_id",unique = true,updatable = false,nullable = false)
-    private long id;
+    @Column(name = "token_id",unique = true,updatable = false,nullable = false, columnDefinition = "UUID")
+    private UUID id;
 
     @Column(name = "hashed_token",nullable = false, unique = true, length = 512)
     private String hashedToken;
