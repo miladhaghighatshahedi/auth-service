@@ -1,30 +1,24 @@
-server:
-  port: 8080
-
 spring:
   application:
     name: auth-service
-  docker:
-    compose:
-      enabled: false
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres_db
-    username: user
-    password: password
+    url: {DB_DATASOURCE_URL}
+    username: {DB_USERNAME}
+    password: {DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 10           # Default: 10
-      minimum-idle: 2                 # Default: same as max
-      connection-timeout: 5000         # 5 seconds (default)
-      idle-timeout: 600000             # 10 minutes (default)
-      max-lifetime: 1800000            # 30 minutes (default)
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
       pool-name: auth-db-connection-pool
-      leak-detection-threshold: 10000  # 10 seconds (optional)
+      leak-detection-threshold: 10000
   jpa:
     hibernate:
-      ddl-auto: none
-    show-sql: true
+      ddl-auto: update
+    show-sql: false
     properties:
       hibernate:
         default_schema: public
@@ -61,9 +55,8 @@ token:
 
 logging:
   level:
-    root: INFO
-    com.mhs.com.mhs.authService: DEBUG
-    org.springframework.security: DEBUG
+    root: warn
+    com.mhs.com.mhs.authService: info
     org.hibernate.SQL: info
     org.hibernate.type.descriptor.sql.BasicBinder: info
     org.springframework.jdbc.datasource.DataSourceTransactionManager: info
