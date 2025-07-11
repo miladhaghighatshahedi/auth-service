@@ -43,6 +43,10 @@ public class RsaJwtConfiguration {
 
 	@Bean
 	public JwtDecoder jwtDecoder(){
+		if (rsaKey.publicKey() == null || rsaKey.publicKey().toString().isEmpty()) {
+			throw new IllegalArgumentException("error: Token cannot be null or empty");
+		}
+
 		return NimbusJwtDecoder.withPublicKey(rsaKey.publicKey()).build();
 	}
 

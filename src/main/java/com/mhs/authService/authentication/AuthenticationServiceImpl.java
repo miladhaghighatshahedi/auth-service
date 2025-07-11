@@ -34,7 +34,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -59,6 +62,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
     private final IpAddressResolverService ipAddressResolverService;
 
 	@Override
+	@Transactional
 	public AuthenticationResponse register(AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest) {
 
 		String username = authenticationRequest.getUsername();
@@ -90,6 +94,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	}
 
 	@Override
+	@Transactional
 	public AuthenticationResponse login(AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
@@ -124,16 +129,52 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	}
 
 	@Override
+	@Transactional
 	public AuthenticationResponse rotate(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
-		return null;
+
+		String ipAddress = ipAddressResolverService.detect(httpServletRequest);
+		String userAgent = httpServletRequest.getHeader("User-Agent");
+		String deviceId = httpServletRequest.getHeader("X-Device-Id");
+
+		Jwt validatedJWT = jwtTokenUtil.validateRefreshToken(refreshTokenRequest,deviceId,userAgent,ipAddress);
+		Authentication authentication = jwtTokenUtil.buildAuthenticationFromJwt(validatedJWT);
+
+		String oldTokenString = validatedJWT.getTokenValue();
+
+		String accessToken = jwtTokenUtil.generateAccessToken(authentication, deviceId, userAgent, ipAddress);
+		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, deviceId, userAgent, ipAddress);
+
+		refreshTokenService.revokeToken(hashService.hashToken(oldTokenString));
+
+		refreshTokenService.saveRefreshToken(
+				authentication.getName(),
+				hashService.hashToken(refreshToken),
+				deviceId,
+				userAgent,
+				ipAddress,
+				Instant.now(),
+				Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(),ChronoUnit.HOURS)
+		);
+
+		return new AuthenticationResponse(
+				accessToken,
+				refreshToken,
+				Instant.now().plus(jwtTokenUtil.getTokenProperties().getAccessTokenExpiryHours(), ChronoUnit.HOURS),
+				authentication.getName(),
+				new HashSet<>(authentication.getAuthorities()),
+				"Token rotated successfully."
+		);
 	}
 
 	@Override
+	@Transactional
 	public AuthenticationResponse logout(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 
 		String ipAddress = ipAddressResolverService.detect(httpServletRequest);
 		String userAgent = httpServletRequest.getHeader("User-Agent");
 		String deviceId  = httpServletRequest.getHeader("X-Device-Id");
+
+		System.out.println(refreshTokenRequest.refreshToken());
 
 		jwtTokenUtil.validateRefreshToken(refreshTokenRequest,deviceId,userAgent,ipAddress);
 
