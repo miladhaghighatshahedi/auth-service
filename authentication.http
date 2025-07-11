@@ -1,0 +1,49 @@
+
+### user login ###
+
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+User-Agent: chrome
+X-Device-Id: X-Device-Id
+
+{
+  "username": "testuser@gmail.com",
+  "password": "#cvdCVD321"
+}
+
+
+### user register ###
+
+POST http://localhost:8080/auth/register
+Content-Type: application/json
+User-Agent: chrome
+X-Device-Id: X-Device-Id
+
+{
+  "username": "testuser@gmail.com",
+  "password": "#cvdCVD321"
+}
+
+
+### user rotate token ###
+
+POST http://localhost:8080/auth/rotate
+Content-Type: application/json
+User-Agent: chrome
+X-Device-Id: X-Device-Id
+
+{
+  "refreshToken": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckBnbWFpbC5jb20iLCJYLURldmljZS1JZCI6IlgtRGV2aWNlLUlkIiwic2NvcGUiOiJQRVJNSVRfVklFV19QUk9EVUNUIFJPTEVfVVNFUiBQRVJNSVRfQUREX1BST0RVQ1QgUEVSTUlUX0RJU0FCTEVfUFJPRFVDVCBQRVJNSVRfVVBEQVRFX1BST0RVQ1QiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODEiLCJVc2VyLUFnZW50IjoiY2hyb21lIiwiSXAtQWRkcmVzcyI6IjEyNy4wLjAuMSIsImV4cCI6MTc1MjUwMjk5OCwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJpYXQiOjE3NTIyNDM3OTh9.Sf5_wHTAqITmjLGVUl6LRwVV-_icHvLJy8aTGILt0hSzWlrM8LyznhfupKzwLHk_f5o8PgIz7g47PoLT4XuzwkaM5Frpj4NT9ZQxSXtOFqZqUSU23qRZlFPmLx5vejYOuWMs4OiCs9HzlAimA9CE9yER2ASgyovz2xLkT7Yw3Zi7kfcdH9w7Ii6_Tk-PYQNMXTbFoM-PeLnyy7Qay3nkzAQoa9buG0meWi-9o1n2MwGKAVdtSBNtSlgjgWo9aFwgIzrud2MIsguPPiBVFYcrT4VyQ4aivKyj80spNP2RiiF9vP9vvrmPC8I-RbUCRZD7jdIDY6ue4n9GxFpTL4ioUw"
+}
+
+
+### user logout ###
+
+POST http://localhost:8080/auth/logout
+Content-Type: application/json
+User-Agent: chrome
+X-Device-Id: X-Device-Id
+
+{
+  "refreshToken": "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlckBnbWFpbC5jb20iLCJYLURldmljZS1JZCI6IlgtRGV2aWNlLUlkIiwic2NvcGUiOiJQRVJNSVRfVklFV19QUk9EVUNUIFJPTEVfVVNFUiBQRVJNSVRfQUREX1BST0RVQ1QgUEVSTUlUX0RJU0FCTEVfUFJPRFVDVCBQRVJNSVRfVVBEQVRFX1BST0RVQ1QiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODEiLCJVc2VyLUFnZW50IjoiY2hyb21lIiwiSXAtQWRkcmVzcyI6IjEyNy4wLjAuMSIsImV4cCI6MTc1MjUwNjQ4MywidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJpYXQiOjE3NTIyNDcyODN9.xDF7HJU5OgwFnOe2I217_kDA_uV9WyFaKCkXhQ9gwZFDJQ9Qow6t6hR4c7_j5FqAaKfIEPzj323RukysnIYrYfkShm6UF4LF6PCg7svLBI8bV0vsNyh-poN6fdLckbYnWCUapAZ8RWySSaPm4bS0qM8DtSgDGt2eIhqfhk3mAkq_aJPTkwZZ0mastY5Y5QgHUfuEq5wUJ-CZmRWeCZXeiHXFNUkPVIEh-peO1wSzKOC_NfKaKwkg3M8flbQ1KBRE6JZy-72nRWSYGWIBX-T28d3vvP9zKiJpwgQwGieF_u1dJQSayUbzy9JXvYvln0ljumjQBEWTX9Z2vwWo0SCT_w"
+}
