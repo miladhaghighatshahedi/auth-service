@@ -17,6 +17,7 @@ package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.AuthenticationRequest;
 import com.mhs.authService.authentication.dto.AuthenticationResponse;
+import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.authentication.resolver.IpAddressResolverService;
 import com.mhs.authService.exception.error.RegistrationException;
 import com.mhs.authService.iam.role.RoleService;
@@ -63,7 +64,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 
 	@Override
 	@Transactional
-	public AuthenticationResponse register(AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest) {
+	public RegistrationResponse register(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
 
 		String username = authenticationRequest.getUsername();
 		String rawPassword = authenticationRequest.getPassword();
@@ -77,13 +78,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 			User user = userFactory.createUser(username, rawPassword, Set.of(roleService.findByName("ROLE_USER")));
 			User savedUser = userService.save(user);
 
-			return new AuthenticationResponse(
-					null,
-					null,
-					null,
-					savedUser.getUsername(),
-					null,
-					"User registered successfully!");
+			return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
 
 		}catch (DataAccessException exception){
 			throw new RegistrationException("error: Database error occurred during registration. Please try again later.");

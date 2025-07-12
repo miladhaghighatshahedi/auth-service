@@ -17,9 +17,11 @@ package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.AuthenticationRequest;
 import com.mhs.authService.authentication.dto.AuthenticationResponse;
+import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,8 +43,8 @@ class AuthenticationController {
 	private final AuthenticationService authenticationService;
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(@RequestBody AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest){
-		return ResponseEntity.ok(authenticationService.register(authenticationRequest,httpServletRequest));
+	public ResponseEntity<RegistrationResponse> register(@RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest){
+		return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(authenticationRequest,httpServletRequest));
 	}
 
 	@PostMapping("/login")
