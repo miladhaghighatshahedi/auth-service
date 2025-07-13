@@ -20,6 +20,7 @@ import com.mhs.authService.authentication.dto.AuthenticationResponse;
 import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -43,7 +44,7 @@ class AuthenticationController {
 	private final AuthenticationService authenticationService;
 
 	@PostMapping("/register")
-	public ResponseEntity<RegistrationResponse> register(@RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest){
+	public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest){
 		return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(authenticationRequest,httpServletRequest));
 	}
 

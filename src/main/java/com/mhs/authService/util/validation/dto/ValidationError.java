@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.dto;
-
-import com.mhs.authService.util.validation.annotation.ValidPassword;
-import com.mhs.authService.util.validation.annotation.ValidUsername;
-import lombok.Data;
+package com.mhs.authService.util.validation.dto;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
-@Data
-public class AuthenticationRequest {
-    @ValidUsername
-    private String username;
-    @ValidPassword
-    private String password;
-}
+public record ValidationError( String message,String field,String status) { }

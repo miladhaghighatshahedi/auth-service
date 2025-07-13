@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.dto;
+package com.mhs.authService.util.validation.strategy.mobile;
 
-import com.mhs.authService.util.validation.annotation.ValidPassword;
-import com.mhs.authService.util.validation.annotation.ValidUsername;
-import lombok.Data;
+import com.mhs.authService.util.validation.dto.ValidationError;
+import java.util.Optional;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
-@Data
-public class AuthenticationRequest {
-    @ValidUsername
-    private String username;
-    @ValidPassword
-    private String password;
+public interface MobileValidationStrategy {
+
+	Optional<ValidationError> isValid(String mobile);
+
 }

@@ -18,7 +18,7 @@ package com.mhs.authService.iam.user.builder;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.user.User;
 import com.mhs.authService.iam.user.enums.UsernameType;
-import com.mhs.authService.iam.user.matcher.UsernameTypeMatcherService;
+import com.mhs.authService.util.matcher.UsernameTypeMatcherService;
 import com.mhs.authService.util.encoding.CustomArgon2PasswordEncoder;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

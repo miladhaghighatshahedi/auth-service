@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.dto;
+package com.mhs.authService.util.validation.strategy.password;
 
-import com.mhs.authService.util.validation.annotation.ValidPassword;
-import com.mhs.authService.util.validation.annotation.ValidUsername;
-import lombok.Data;
+import com.mhs.authService.util.validation.dto.ValidationError;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
+import java.util.Optional;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
-@Data
-public class AuthenticationRequest {
-    @ValidUsername
-    private String username;
-    @ValidPassword
-    private String password;
+@Component
+@Order(1)
+public class PasswordBlank implements PasswordValidationStrategy{
+
+	@Override
+	public Optional<ValidationError> isValid(String password) {
+		if( password == null || password.isBlank()){
+			return Optional.of(new ValidationError("Password can not be null or blank!","PASSWORD","PASSWORD_BLANK"));
+		}
+		return Optional.empty();
+	}
+
 }
