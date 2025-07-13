@@ -19,10 +19,15 @@ import com.mhs.authService.exception.error.*;
 import com.mhs.authService.exception.model.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -70,6 +75,20 @@ public class CentralExceptionHandler {
 	@ExceptionHandler(RateLimitExceededException.class)
 	public ResponseEntity<String> handleRateLimitExceededException(RateLimitExceededException ex) {
 		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, List<String>>> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+		Map<String, List<String>> errors = exception.getBindingResult()
+				.getFieldErrors()
+				.stream()
+				.collect(Collectors.groupingBy(
+						FieldError::getField,
+						Collectors.mapping(
+								FieldError::getDefaultMessage,
+								Collectors.toList())
+				));
+		return ResponseEntity.badRequest().body(errors);
 	}
 
 }
