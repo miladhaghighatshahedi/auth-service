@@ -13,30 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.iam.user.matcher;
+package com.mhs.authService.util.matcher;
 
 import com.mhs.authService.iam.user.enums.UsernameType;
-import org.springframework.stereotype.Component;
-import java.util.regex.Pattern;
 
 /**
  *
  * @author Milad Haghighat Shahedi
  */
 
-@Component
-public class EmailRegexMatcher implements UsernameTypeMatcher {
+public interface UsernameTypeMatcher {
 
-    private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",Pattern.CASE_INSENSITIVE);
+    boolean determine(String input);
 
-    @Override
-    public boolean determine(String input) {
-        return EMAIL_PATTERN.matcher(input).matches();
-    }
-
-    @Override
-    public UsernameType getType() {
-        return UsernameType.EMAIL;
-    }
+    UsernameType getType();
 
 }
