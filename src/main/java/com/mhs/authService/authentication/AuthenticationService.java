@@ -17,6 +17,7 @@ package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.AuthenticationRequest;
 import com.mhs.authService.authentication.dto.AuthenticationResponse;
+import com.mhs.authService.authentication.dto.LogoutResponse;
 import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,6 +35,6 @@ public interface AuthenticationService {
 
 	AuthenticationResponse rotate(RefreshTokenRequest refreshTokenRequest,HttpServletRequest httpServletRequest);
 
-	AuthenticationResponse logout(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest);
+	LogoutResponse logout(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest);
 
 }

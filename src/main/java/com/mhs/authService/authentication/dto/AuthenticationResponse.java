@@ -15,8 +15,6 @@
  */
 package com.mhs.authService.authentication.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import java.time.Instant;
 import java.util.Set;
@@ -26,13 +24,10 @@ import java.util.Set;
  * @author Milad Haghighat Shahedi
  */
 
-@Data
-@AllArgsConstructor
-public class AuthenticationResponse {
-    private String  accessToken;
-    private String  refreshToken;
-    private Instant expiresAt;
-    private String  username;
-    private final Set<? extends GrantedAuthority> authorities;
-    private String message;
-}
+public record AuthenticationResponse (
+         String  accessToken,
+         String  refreshToken,
+         Instant expiresAt,
+         String  username,
+         Set<? extends GrantedAuthority> authorities,
+         String message) { }

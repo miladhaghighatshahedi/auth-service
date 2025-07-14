@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
  * @author Milad Haghighat Shahedi
  */
 
-@Target(ElementType.FIELD)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = UsernameConstraintValidator.class)
 public @interface ValidUsername {

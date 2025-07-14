@@ -17,6 +17,7 @@ package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.AuthenticationRequest;
 import com.mhs.authService.authentication.dto.AuthenticationResponse;
+import com.mhs.authService.authentication.dto.LogoutResponse;
 import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -59,7 +60,7 @@ class AuthenticationController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<AuthenticationResponse> logout( @RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<LogoutResponse> logout(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(authenticationService.logout(refreshTokenRequest,httpServletRequest));
 	}
 

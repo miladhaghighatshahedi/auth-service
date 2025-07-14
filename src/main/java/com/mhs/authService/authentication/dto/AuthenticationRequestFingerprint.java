@@ -19,4 +19,4 @@ package com.mhs.authService.authentication.dto;
  * @author Milad Haghighat Shahedi
  */
 
-public record RegistrationResponse (String username, String message) {}
+public record AuthenticationRequestFingerprint(String deviceId,String ipAddress,String userAgent) { }

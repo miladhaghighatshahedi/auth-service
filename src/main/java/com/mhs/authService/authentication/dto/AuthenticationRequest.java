@@ -17,17 +17,10 @@ package com.mhs.authService.authentication.dto;
 
 import com.mhs.authService.util.validation.annotation.ValidPassword;
 import com.mhs.authService.util.validation.annotation.ValidUsername;
-import lombok.Data;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
-@Data
-public class AuthenticationRequest {
-    @ValidUsername
-    private String username;
-    @ValidPassword
-    private String password;
-}
+public record AuthenticationRequest(@ValidUsername String username, @ValidPassword String password) { }
+
