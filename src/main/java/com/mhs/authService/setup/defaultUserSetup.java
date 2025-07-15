@@ -63,9 +63,7 @@ public class defaultUserSetup implements ApplicationRunner {
 	}
 
 	private void registerUser(String username,String password,HttpServletRequest httpServletRequest){
-		AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-		authenticationRequest.setUsername(username);
-		authenticationRequest.setPassword(password);
+		AuthenticationRequest authenticationRequest = new AuthenticationRequest(username,password);
 		authenticationService.register(authenticationRequest,httpServletRequest);
 	}
 

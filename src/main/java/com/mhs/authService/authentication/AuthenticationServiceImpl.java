@@ -91,7 +91,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	public AuthenticationResponse login(AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(authenticationRequest.username(), authenticationRequest.username())
+				new UsernamePasswordAuthenticationToken(authenticationRequest.username(), authenticationRequest.password())
 		);
 
 		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
