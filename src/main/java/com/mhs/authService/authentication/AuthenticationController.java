@@ -19,6 +19,8 @@ import com.mhs.authService.authentication.dto.AuthenticationRequest;
 import com.mhs.authService.authentication.dto.AuthenticationResponse;
 import com.mhs.authService.authentication.dto.LogoutResponse;
 import com.mhs.authService.authentication.dto.RegistrationResponse;
+import com.mhs.authService.authentication.security.ratelimit.annotation.RateLimit;
+import com.mhs.authService.authentication.security.ratelimit.enums.IdentifierType;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -44,21 +46,29 @@ class AuthenticationController {
 
 	private final AuthenticationService authenticationService;
 
+
+	@RateLimit( key = "REGISTER_", maxRequests = 3, timeFrameInMinutes = 60, identifiers = {IdentifierType.IP})
 	@PostMapping("/register")
 	public ResponseEntity<RegistrationResponse> register(@Valid @RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest){
 		return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(authenticationRequest,httpServletRequest));
 	}
 
+
+	@RateLimit( key = "LOGIN_", maxRequests = 3, timeFrameInMinutes = 15, identifiers = {IdentifierType.IP})
 	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> login( @RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(authenticationService.login(authenticationRequest,httpServletRequest));
 	}
 
+
+	@RateLimit( key = "ROTATE_", maxRequests = 3, timeFrameInMinutes = 15, identifiers = {IdentifierType.USER, IdentifierType.IP})
 	@PostMapping("/rotate")
 	public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(authenticationService.rotate(refreshTokenRequest,httpServletRequest));
 	}
 
+
+	@RateLimit( key = "LOGOUT_", maxRequests = 3, timeFrameInMinutes = 15, identifiers = {IdentifierType.USER, IdentifierType.IP})
 	@PostMapping("/logout")
 	public ResponseEntity<LogoutResponse> logout(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(authenticationService.logout(refreshTokenRequest,httpServletRequest));

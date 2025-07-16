@@ -34,7 +34,7 @@ public class RateLimiterKeyBuilder {
 
     public String buildCompositeKey(IdentifierType[] types){
         List<String> components = Arrays.stream(types)
-                .map(type -> resolveIdentifier(type))
+                .map(this::resolveIdentifier)
                 .toList();
         return String.join("_",components);
     }

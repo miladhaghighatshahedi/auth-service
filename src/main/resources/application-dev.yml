@@ -30,6 +30,19 @@ spring:
         default_schema: public
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+      jedis:
+        pool:
+          enabled: true
+          max-active: 16
+          max-idle: 8
+          max-wait: -1m
+          min-idle: 0
+          time-between-eviction-runs: 200ms
 
 auth:
   security:
