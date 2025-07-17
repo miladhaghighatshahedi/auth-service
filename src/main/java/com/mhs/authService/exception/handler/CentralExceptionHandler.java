@@ -17,6 +17,7 @@ package com.mhs.authService.exception.handler;
 
 import com.mhs.authService.exception.error.*;
 import com.mhs.authService.exception.model.ExceptionResponse;
+import com.mhs.authService.util.validation.dto.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -89,6 +90,11 @@ public class CentralExceptionHandler {
 								Collectors.toList())
 				));
 		return ResponseEntity.badRequest().body(errors);
+	}
+
+	@ExceptionHandler(CredentialValidationException.class)
+	public ResponseEntity<List<ValidationError>> handleCredentialValidationException(CredentialValidationException ex) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getErrors());
 	}
 
 }

@@ -17,6 +17,7 @@ package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.*;
 import com.mhs.authService.authentication.resolver.IpAddressResolverService;
+import com.mhs.authService.authentication.validator.CredentialValidationService;
 import com.mhs.authService.exception.error.RegistrationException;
 import com.mhs.authService.iam.role.RoleService;
 import com.mhs.authService.iam.user.User;
@@ -59,10 +60,13 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final RefreshTokenService refreshTokenService;
 	private final AuthenticationManager authenticationManager;
     private final IpAddressResolverService ipAddressResolverService;
+	private final CredentialValidationService credentialValidationService;
 
 	@Override
 	@Transactional
 	public RegistrationResponse register(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
+
+		credentialValidationService.validate(authenticationRequest);
 
 		String username = authenticationRequest.username();
 		String rawPassword = authenticationRequest.username();
