@@ -50,7 +50,6 @@ public class SecurityConfig {
 						.requestMatchers("/auth/register","/auth/login","/auth/rotate","/auth/logout").permitAll()
 						.anyRequest().authenticated()
 				)
-				.authenticationProvider(authenticationProvider)
 				.oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> jwt.decoder(jwtDecoder)))
 				.build();
 	}

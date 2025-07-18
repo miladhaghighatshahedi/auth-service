@@ -20,6 +20,8 @@ import com.mhs.authService.exception.model.ExceptionResponse;
 import com.mhs.authService.util.validation.dto.ValidationError;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -95,6 +97,26 @@ public class CentralExceptionHandler {
 	@ExceptionHandler(CredentialValidationException.class)
 	public ResponseEntity<List<ValidationError>> handleCredentialValidationException(CredentialValidationException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getErrors());
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ExceptionResponse> handleBadCredentialException(BadCredentialsException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.UNAUTHORIZED.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+	}
+
+	@ExceptionHandler(LockedException.class)
+	public ResponseEntity<ExceptionResponse> handLockedException(LockedException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.LOCKED.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.LOCKED).body(errorResponse);
 	}
 
 }
