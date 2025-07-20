@@ -70,11 +70,6 @@ public class CentralExceptionHandler {
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
 
-	@ExceptionHandler(InvalidTokenException.class)
-	public ResponseEntity<String> handleInvalidTokenException(InvalidTokenException ex) {
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-	}
-
 	@ExceptionHandler(RateLimitExceededException.class)
 	public ResponseEntity<String> handleRateLimitExceededException(RateLimitExceededException ex) {
 		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
