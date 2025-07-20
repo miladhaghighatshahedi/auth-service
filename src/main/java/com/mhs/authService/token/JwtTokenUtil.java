@@ -15,12 +15,12 @@
  */
 package com.mhs.authService.token;
 
-import com.mhs.authService.exception.error.InvalidTokenException;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import com.mhs.authService.token.model.RefreshTokenService;
 import com.mhs.authService.util.hash.HashService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -111,47 +110,15 @@ public class JwtTokenUtil {
         return decodedJwt;
     }
 
-    public void validateRefreshTokenType(Jwt decodedJwt){
-        if (!tokenProperties.getRefreshTokenClaimType().equals(decodedJwt.getClaimAsString("type"))) {
-            throw new JwtException("error: Invalid Token Type!");
-        }
-    }
+    public Jwt validateAccessToken(String rawAccessToken){
 
-    public void validateRefreshTokenExpiry(Jwt decodedJwt){
-        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
-            throw new InvalidTokenException("error: Refresh token is expired or revoked!");
-        }
-    }
+        Jwt decodedJwt = jwtDecoder.decode(rawAccessToken);
 
-    public void validateRefreshTokenFingerPrintsExpiryAgainstDB(String hashedRefreshToken,String deviceId,String userAgent,String ipAddress){
-        boolean validRefreshTokenInDB = refreshTokenService.isTokenValid(hashedRefreshToken, deviceId, userAgent, ipAddress);
-        if (!validRefreshTokenInDB) {
-            throw new InvalidTokenException("error: Refresh token revoked or not valid for this device!");
-        }
-    }
+        validateAccessTokenType(decodedJwt);
+        validateAccessTokenExpiry(decodedJwt);
+        validateAccessTokenIssuer(decodedJwt);
 
-    public void validateTokenFingerPrints(Jwt decodedJwt,String deviceId,String userAgent,String ipAddress){
-
-        String tokenDeviceId  = decodedJwt.getClaimAsString("X-Device-Id");
-        String tokenUserAgent = decodedJwt.getClaimAsString("User-Agent");
-        String tokenIpAddress = decodedJwt.getClaimAsString("Ip-Address");
-        String issuer = decodedJwt.getIssuer().toString();
-
-        if (!deviceId.equals(tokenDeviceId)) {
-            throw new InvalidTokenException("Device mismatch – refresh token misuse suspected!");
-        }
-
-        if (!userAgent.equals(tokenUserAgent)) {
-            throw new InvalidTokenException("UserAgent mismatch – refresh token misuse suspected!");
-        }
-
-        if (!ipAddress.equals(tokenIpAddress)) {
-            throw new InvalidTokenException("IpAddress mismatch – refresh token misuse suspected!");
-        }
-
-        if(!issuer.equals(tokenProperties.getRefreshTokenIssuer())){
-            throw new InvalidTokenException("Issuer mismatch – refresh token misuse suspected!");
-        }
+        return decodedJwt;
     }
 
     public Authentication buildAuthenticationFromJwt(Jwt decodedJwt){
@@ -167,6 +134,68 @@ public class JwtTokenUtil {
         UserDetails principal = new User(username, "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, null, authorities);
 
+    }
+
+    private void validateRefreshTokenType(Jwt decodedJwt){
+        if (!tokenProperties.getRefreshTokenClaimType().equals(decodedJwt.getClaimAsString("type"))) {
+            throw new BadCredentialsException("error: Invalid Token Type! (expected refresh token)");
+        }
+    }
+
+    private void validateAccessTokenType(Jwt decodedJwt){
+        if (!tokenProperties.getAccessTokenClaimType().equals(decodedJwt.getClaimAsString("type"))) {
+            throw new BadCredentialsException("error: Invalid Token Type! (expected access token)");
+        }
+    }
+
+    private void validateRefreshTokenExpiry(Jwt decodedJwt){
+        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
+            throw new BadCredentialsException("error: Refresh token is expired or revoked!");
+        }
+    }
+
+    private void validateAccessTokenExpiry(Jwt decodedJwt){
+        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
+            throw new BadCredentialsException("error: Access token is expired!");
+        }
+    }
+
+    private void validateAccessTokenIssuer(Jwt decodedJwt){
+        String issuer = decodedJwt.getIssuer().toString();
+        if(!issuer.equals(tokenProperties.getAccessTokenIssuer())){
+            throw new BadCredentialsException("Issuer mismatch! (invalid access token)");
+        }
+    }
+
+    private void validateRefreshTokenFingerPrintsExpiryAgainstDB(String hashedRefreshToken,String deviceId,String userAgent,String ipAddress){
+        boolean validRefreshTokenInDB = refreshTokenService.isTokenValid(hashedRefreshToken, deviceId, userAgent, ipAddress);
+        if (!validRefreshTokenInDB) {
+            throw new BadCredentialsException("error: Refresh token revoked or not valid for this device!");
+        }
+    }
+
+    private void validateTokenFingerPrints(Jwt decodedJwt,String deviceId,String userAgent,String ipAddress){
+
+        String tokenDeviceId  = decodedJwt.getClaimAsString("X-Device-Id");
+        String tokenUserAgent = decodedJwt.getClaimAsString("User-Agent");
+        String tokenIpAddress = decodedJwt.getClaimAsString("Ip-Address");
+        String issuer = decodedJwt.getIssuer().toString();
+
+        if (!deviceId.equals(tokenDeviceId)) {
+            throw new BadCredentialsException("Device mismatch – refresh token misuse suspected!");
+        }
+
+        if (!userAgent.equals(tokenUserAgent)) {
+            throw new BadCredentialsException("UserAgent mismatch – refresh token misuse suspected!");
+        }
+
+        if (!ipAddress.equals(tokenIpAddress)) {
+            throw new BadCredentialsException("IpAddress mismatch – refresh token misuse suspected!");
+        }
+
+        if(!issuer.equals(tokenProperties.getRefreshTokenIssuer())){
+            throw new BadCredentialsException("Issuer mismatch – refresh token misuse suspected!");
+        }
     }
 
 }

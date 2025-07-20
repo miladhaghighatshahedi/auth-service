@@ -15,27 +15,36 @@
  */
 package com.mhs.authService.config;
 
+import com.mhs.authService.security.CustomAccessDeniedHandler;
+import com.mhs.authService.security.JwtAuthenticationEntryPoint;
+import com.mhs.authService.security.JwtAuthenticationFilter;
+import com.mhs.authService.token.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 @AllArgsConstructor
 public class SecurityConfig {
 
+	private final JwtTokenUtil jwtTokenUtil;
+	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -43,9 +52,14 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/register","/auth/login","/auth/rotate","/auth/logout").permitAll()
+						.requestMatchers("/auth/register","/auth/login").permitAll()
 						.anyRequest().authenticated()
 				)
+
+				.exceptionHandling(exception -> exception
+						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+						.accessDeniedHandler(customAccessDeniedHandler)   )
+				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 

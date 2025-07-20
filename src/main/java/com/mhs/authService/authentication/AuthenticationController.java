@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -53,7 +52,6 @@ class AuthenticationController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(authenticationService.register(authenticationRequest,httpServletRequest));
 	}
 
-
 	@RateLimit( key = "LOGIN_", maxRequests = 3, timeFrameInMinutes = 15, identifiers = {IdentifierType.IP})
 	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> login( @RequestBody AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
@@ -66,7 +64,6 @@ class AuthenticationController {
 	public ResponseEntity<AuthenticationResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(authenticationService.rotate(refreshTokenRequest,httpServletRequest));
 	}
-
 
 	@RateLimit( key = "LOGOUT_", maxRequests = 3, timeFrameInMinutes = 15, identifiers = {IdentifierType.USER, IdentifierType.IP})
 	@PostMapping("/logout")
