@@ -23,7 +23,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -32,5 +31,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles r WHERE u.username = :username")
     Optional<User> findByUsername(@Param("username") String username);
+
+    @Query(value = "SELECT EXISTS(SELECT 1 FROM tbl_credential WHERE username= :username)",nativeQuery = true)
+    boolean existsByUsername(@Param("username") String username);
 
 }

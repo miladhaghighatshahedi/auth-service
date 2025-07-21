@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -43,9 +42,11 @@ class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
+
     @Override
+    @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
-        return userRepository.findByUsername(username).isPresent();
+        return userRepository.existsByUsername(username);
     }
 
 }

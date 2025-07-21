@@ -36,7 +36,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -44,7 +46,6 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -61,31 +62,36 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final AuthenticationManager authenticationManager;
     private final IpAddressResolverService ipAddressResolverService;
 	private final CredentialValidationService credentialValidationService;
+	private final TransactionTemplate transactionTemplate;
 
 	@Override
-	@Transactional
 	public RegistrationResponse register(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
 
 		credentialValidationService.validate(authenticationRequest);
 
 		String username = authenticationRequest.username();
-		String rawPassword = authenticationRequest.username();
+		String rawPassword = authenticationRequest.password();
 
 		if(userService.existsByUsername(username)){
-			throw new DataIntegrityViolationException("error: username already taken!");
+			throw new RegistrationException("error: username already taken!");
 		}
 
-		try{
+		try {
 
-			User user = userFactory.createUser(username, rawPassword, Set.of(roleService.findByName("ROLE_USER")));
-			User savedUser = userService.save(user);
+			return transactionTemplate.execute(status -> {
+				try {
+						User user = userFactory.createUser(username, rawPassword, Set.of(roleService.findByName("ROLE_USER")));
+						User savedUser = userService.save(user);
+						return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
+					} catch (DataIntegrityViolationException e) {
+						throw new RegistrationException("error: Username already exists. Please choose a different username.");
+					} catch (DataAccessException exception) {
+					    throw new RegistrationException("error: Database error occurred during registration. Please try again later.");
+				    }
+				});
 
-			return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
-
-		}catch (DataAccessException exception){
-			throw new RegistrationException("error: Database error occurred during registration. Please try again later.");
-		}catch (Exception exception) {
-			throw new RegistrationException("error: Registration failed due to an internal error.");
+		    } catch (TransactionException e) {
+		       throw new RegistrationException("Error: Transaction processing failed");
 		}
 
 	}
