@@ -16,7 +16,8 @@
 package com.mhs.authService.authentication;
 
 import com.mhs.authService.authentication.dto.*;
-import com.mhs.authService.authentication.resolver.IpAddressResolverService;
+import com.mhs.authService.authentication.security.fingerprint.AuthenticationRequestFingerprint;
+import com.mhs.authService.authentication.security.fingerprint.AuthenticationRequestFingerprintExtractor;
 import com.mhs.authService.authentication.validator.CredentialValidationService;
 import com.mhs.authService.exception.error.RegistrationException;
 import com.mhs.authService.iam.role.Role;
@@ -45,7 +46,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -64,8 +64,8 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final RefreshTokenService refreshTokenService;
 	private final RefreshTokenFactory refreshTokenFactory;
 	private final AuthenticationManager authenticationManager;
-	private final IpAddressResolverService ipAddressResolverService;
 	private final CredentialValidationService credentialValidationService;
+	private final AuthenticationRequestFingerprintExtractor authenticationRequestFingerprint;
 	private final TransactionTemplate transactionTemplate;
 
 	@Override
@@ -106,7 +106,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 				new UsernamePasswordAuthenticationToken(authenticationRequest.username(), authenticationRequest.password())
 		);
 
-		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
+		AuthenticationRequestFingerprint fingerprint = authenticationRequestFingerprint.extractFrom(httpServletRequest);
 
 		String accessToken  = jwtTokenUtil.generateAccessToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
 		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
@@ -141,7 +141,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	@Override
 	public AuthenticationResponse rotate(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 
-		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
+		AuthenticationRequestFingerprint fingerprint = authenticationRequestFingerprint.extractFrom(httpServletRequest);
 
 		Jwt validatedJWT = jwtTokenUtil.validateRefreshToken(refreshTokenRequest,fingerprint.deviceId(), fingerprint.userAgent(),fingerprint.ipAddress());
 
@@ -183,7 +183,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	@Override
 	public LogoutResponse logout(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 
-		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
+		AuthenticationRequestFingerprint fingerprint = authenticationRequestFingerprint.extractFrom(httpServletRequest);
 		String deviceId =fingerprint.deviceId();
 		String userAgent = fingerprint.userAgent();
 		String ipAddress = fingerprint.ipAddress();
@@ -197,22 +197,6 @@ class AuthenticationServiceImpl implements AuthenticationService{
 		});
 
 		return new LogoutResponse("User logout successfully.");
-	}
-
-	private AuthenticationRequestFingerprint extractAuthenticationRequestFingerprint(HttpServletRequest httpServletRequest){
-
-		String ipAddress = ipAddressResolverService.detect(httpServletRequest);
-
-		String deviceId = Optional.ofNullable(httpServletRequest.getHeader("X-Device-Id"))
-				.filter(id -> !id.isBlank())
-				.orElse("UNKNOWN_DEVICE_ID");
-
-		String userAgent = Optional.ofNullable(httpServletRequest.getHeader("User-Agent"))
-				.filter(agent -> !agent.isBlank())
-				.orElse("UNKNOWN_USER_AGENT");
-
-		return new AuthenticationRequestFingerprint(deviceId,ipAddress,userAgent);
-
 	}
 
 }

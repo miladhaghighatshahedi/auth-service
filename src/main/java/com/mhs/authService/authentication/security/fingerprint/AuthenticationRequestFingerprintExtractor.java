@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.dto;
+package com.mhs.authService.authentication.security.fingerprint;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public record AuthenticationRequestFingerprint(String deviceId,String ipAddress,String userAgent) { }
+public interface AuthenticationRequestFingerprintExtractor {
+
+	AuthenticationRequestFingerprint extractFrom(HttpServletRequest httpServletRequest);
+
+}

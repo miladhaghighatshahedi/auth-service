@@ -52,7 +52,7 @@ public class SecurityConfig {
 				.csrf(AbstractHttpConfigurer::disable)
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
-						.requestMatchers("/auth/register","/auth/login").permitAll()
+						.requestMatchers("/auth/register","/auth/login","/auth/rotate","/auth/logout").permitAll()
 						.anyRequest().authenticated()
 				)
 
