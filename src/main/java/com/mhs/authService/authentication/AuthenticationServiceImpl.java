@@ -41,7 +41,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -65,8 +64,8 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final RefreshTokenService refreshTokenService;
 	private final RefreshTokenFactory refreshTokenFactory;
 	private final AuthenticationManager authenticationManager;
-    private final IpAddressResolverService ipAddressResolverService;
-    private final CredentialValidationService credentialValidationService;
+	private final IpAddressResolverService ipAddressResolverService;
+	private final CredentialValidationService credentialValidationService;
 	private final TransactionTemplate transactionTemplate;
 
 	@Override
@@ -147,20 +146,20 @@ class AuthenticationServiceImpl implements AuthenticationService{
 		Jwt validatedJWT = jwtTokenUtil.validateRefreshToken(refreshTokenRequest,fingerprint.deviceId(), fingerprint.userAgent(),fingerprint.ipAddress());
 
 		Authentication authentication = jwtTokenUtil.buildAuthenticationFromJwt(validatedJWT);
-		String hashedRefreshToken = hashService.hashToken(refreshTokenRequest.refreshToken());
-
-		String oldTokenString = validatedJWT.getTokenValue();
+		String oldHashedRefreshToken = hashService.hashToken(validatedJWT.getTokenValue());
 
 		String accessToken = jwtTokenUtil.generateAccessToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
 		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
+		String newHashedRefreshToken = hashService.hashToken(refreshToken);
+
 
 		return transactionTemplate.execute(status -> {
 
-			refreshTokenService.revokeToken(hashService.hashToken(oldTokenString));
+			refreshTokenService.revokeToken(hashService.hashToken(oldHashedRefreshToken));
 			User user = userService.findByUsername(authentication.getName());
 			RefreshToken refreshTokenEntity = refreshTokenFactory.create(
 					user,
-					hashedRefreshToken,
+					newHashedRefreshToken,
 					fingerprint.deviceId(),
 					fingerprint.userAgent(),
 					fingerprint.ipAddress(),
@@ -168,6 +167,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 					Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(), ChronoUnit.HOURS),
 					false);
 			refreshTokenService.saveRefreshToken(user,refreshTokenEntity);
+
 			return new AuthenticationResponse(
 					accessToken,
 					refreshToken,
@@ -181,7 +181,6 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	}
 
 	@Override
-	@Transactional
 	public LogoutResponse logout(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 
 		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
@@ -193,7 +192,9 @@ class AuthenticationServiceImpl implements AuthenticationService{
 
 		String hashedToken = hashService.hashToken(refreshTokenRequest.refreshToken());
 
-		refreshTokenService.revokeToken(hashedToken);
+		transactionTemplate.executeWithoutResult(status -> {
+			refreshTokenService.revokeToken(hashedToken);
+		});
 
 		return new LogoutResponse("User logout successfully.");
 	}
