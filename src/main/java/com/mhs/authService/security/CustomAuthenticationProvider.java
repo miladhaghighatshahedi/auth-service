@@ -27,9 +27,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -41,6 +42,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	private final CustomArgon2PasswordEncoder passwordEncoder;
 	private final HttpContextIpAddressResolver httpContextIpAddressResolver;
 	private final LoginBruteForceService loginBruteForceService;
+	private final PlatformTransactionManager platformTransactionManager;
+	private final TransactionTemplate transactionTemplate;
 
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -53,7 +56,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 		}
 
 		try{
-			CustomUserDetails userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(username);
+
+			TransactionTemplate readOnlyTemplate = new TransactionTemplate(platformTransactionManager);
+			readOnlyTemplate.setReadOnly(true);
+
+			CustomUserDetails userDetails = transactionTemplate.execute(status ->
+					(CustomUserDetails) userDetailsService.loadUserByUsername(username)
+			);
+
 			String encryptedPassword = userDetails.getPassword();
 
 			if(!passwordEncoder.matches(rawPassword,encryptedPassword)){

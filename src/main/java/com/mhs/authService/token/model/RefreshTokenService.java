@@ -15,22 +15,15 @@
  */
 package com.mhs.authService.token.model;
 
-import java.time.Instant;
+import com.mhs.authService.iam.user.User;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 public interface RefreshTokenService {
 
-    void saveRefreshToken( String username,
-                           String hashedRefreshToken,
-                           String deviceId,
-                           String userAgent,
-                           String ipAddress,
-                           Instant refreshTokenIssuedDate,
-                           Instant refreshTokenExpiryDate);
+    void saveRefreshToken(User user, RefreshToken refreshToken);
 
     void revokeToken(String hashedRefreshToken);
 

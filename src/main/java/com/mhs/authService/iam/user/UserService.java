@@ -16,15 +16,16 @@
 package com.mhs.authService.iam.user;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 public interface UserService {
 
+    User save(User user);
+
     User findByUsername(String username);
 
-    User save(User user);
+    User findByUsernameWithAssociations(String username);
 
     boolean existsByUsername(String username);
 

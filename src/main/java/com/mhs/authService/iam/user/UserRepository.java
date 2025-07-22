@@ -29,8 +29,11 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    @Query("SELECT u FROM User u LEFT JOIN FETCH u.roles r WHERE u.username = :username")
+    @Query("SELECT u FROM User u where u.username = :username")
     Optional<User> findByUsername(@Param("username") String username);
+
+    @Query("SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles r LEFT JOIN FETCH r.permissions  WHERE u.username = :username")
+    Optional<User> findByUsernameWithAssociation(@Param("username") String username);
 
     @Query(value = "SELECT EXISTS(SELECT 1 FROM tbl_credential WHERE username= :username)",nativeQuery = true)
     boolean existsByUsername(@Param("username") String username);

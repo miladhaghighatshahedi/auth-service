@@ -20,10 +20,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -36,12 +33,10 @@ class RoleServiceImpl implements RoleService {
     @Override
     public Role findByName(String name) {
         return roleRepository.findByName(name)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(String.format("error: role with the given name %s does not exists.",name)));
+                .orElseThrow(() -> new EntityNotFoundException(String.format("error: role with the given name %s does not exists.",name)));
     }
 
     @Override
-    @Transactional
     public Role findByNameOrCreate(String name) {
 
         return roleRepository.findByName(name).orElseGet(()-> {

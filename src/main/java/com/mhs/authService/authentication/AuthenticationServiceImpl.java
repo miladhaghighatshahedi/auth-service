@@ -19,13 +19,16 @@ import com.mhs.authService.authentication.dto.*;
 import com.mhs.authService.authentication.resolver.IpAddressResolverService;
 import com.mhs.authService.authentication.validator.CredentialValidationService;
 import com.mhs.authService.exception.error.RegistrationException;
+import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
 import com.mhs.authService.iam.user.User;
 import com.mhs.authService.iam.user.UserService;
 import com.mhs.authService.iam.user.factory.UserFactory;
 import com.mhs.authService.token.JwtTokenUtil;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
+import com.mhs.authService.token.model.RefreshToken;
 import com.mhs.authService.token.model.RefreshTokenService;
+import com.mhs.authService.token.model.factory.RefreshTokenFactory;
 import com.mhs.authService.util.hash.HashService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -59,9 +62,10 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final HashService hashService;
 	private final JwtTokenUtil jwtTokenUtil;
 	private final RefreshTokenService refreshTokenService;
+	private final RefreshTokenFactory refreshTokenFactory;
 	private final AuthenticationManager authenticationManager;
     private final IpAddressResolverService ipAddressResolverService;
-	private final CredentialValidationService credentialValidationService;
+    private final CredentialValidationService credentialValidationService;
 	private final TransactionTemplate transactionTemplate;
 
 	@Override
@@ -77,27 +81,25 @@ class AuthenticationServiceImpl implements AuthenticationService{
 		}
 
 		try {
-
 			return transactionTemplate.execute(status -> {
 				try {
-						User user = userFactory.createUser(username, rawPassword, Set.of(roleService.findByName("ROLE_USER")));
-						User savedUser = userService.save(user);
-						return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
-					} catch (DataIntegrityViolationException e) {
-						throw new RegistrationException("error: Username already exists. Please choose a different username.");
-					} catch (DataAccessException exception) {
-					    throw new RegistrationException("error: Database error occurred during registration. Please try again later.");
-				    }
-				});
-
-		    } catch (TransactionException e) {
-		       throw new RegistrationException("Error: Transaction processing failed");
+					Role roleUser = roleService.findByName("ROLE_USER");
+					User user = userFactory.createUser(username, rawPassword, Set.of(roleUser));
+					User savedUser = userService.save(user);
+					return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
+				} catch (DataIntegrityViolationException e) {
+					throw new RegistrationException("error: Username already exists. Please choose a different username.");
+				} catch (DataAccessException exception) {
+					throw new RegistrationException("error: Database error occurred during registration. Please try again later.");
+				}
+			});
+		} catch (TransactionException e) {
+			throw new RegistrationException("Error: Unable to register user due to transaction failure.");
 		}
 
 	}
 
 	@Override
-	@Transactional
 	public AuthenticationResponse login(AuthenticationRequest authenticationRequest,HttpServletRequest httpServletRequest) {
 
 		Authentication authentication = authenticationManager.authenticate(
@@ -105,23 +107,26 @@ class AuthenticationServiceImpl implements AuthenticationService{
 		);
 
 		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
-		String deviceId =fingerprint.deviceId();
-		String userAgent = fingerprint.userAgent();
-		String ipAddress = fingerprint.ipAddress();
 
-		String accessToken  = jwtTokenUtil.generateAccessToken(authentication, deviceId, userAgent, ipAddress);
-		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, deviceId, userAgent, ipAddress);
+		String accessToken  = jwtTokenUtil.generateAccessToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
+		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
+		String hashedRefreshToken = hashService.hashToken(refreshToken);
 
-		String hashedToken = hashService.hashToken(refreshToken);
+		User user = userService.findByUsername(authentication.getName());
 
-		refreshTokenService.saveRefreshToken(
-				authentication.getName(),
-				hashedToken,
-				deviceId,
-				userAgent,
-				ipAddress,
+		RefreshToken refreshTokenEntity = refreshTokenFactory.create(
+				user,
+				hashedRefreshToken,
+				fingerprint.deviceId(),
+				fingerprint.userAgent(),
+				fingerprint.ipAddress(),
 				Instant.now(),
-				Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(), ChronoUnit.HOURS));
+				Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(), ChronoUnit.HOURS),
+				false);
+
+		transactionTemplate.executeWithoutResult(status -> {
+			refreshTokenService.saveRefreshToken(user, refreshTokenEntity);
+		});
 
 		return new AuthenticationResponse(
 				accessToken,
@@ -133,42 +138,44 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	}
 
 	@Override
-	@Transactional
 	public AuthenticationResponse rotate(RefreshTokenRequest refreshTokenRequest, HttpServletRequest httpServletRequest) {
 
 		AuthenticationRequestFingerprint fingerprint = extractAuthenticationRequestFingerprint(httpServletRequest);
-		String deviceId =fingerprint.deviceId();
-		String userAgent = fingerprint.userAgent();
-		String ipAddress = fingerprint.ipAddress();
 
-		Jwt validatedJWT = jwtTokenUtil.validateRefreshToken(refreshTokenRequest,deviceId,userAgent,ipAddress);
+		Jwt validatedJWT = jwtTokenUtil.validateRefreshToken(refreshTokenRequest,fingerprint.deviceId(), fingerprint.userAgent(),fingerprint.ipAddress());
+
 		Authentication authentication = jwtTokenUtil.buildAuthenticationFromJwt(validatedJWT);
+		String hashedRefreshToken = hashService.hashToken(refreshTokenRequest.refreshToken());
 
 		String oldTokenString = validatedJWT.getTokenValue();
 
-		String accessToken = jwtTokenUtil.generateAccessToken(authentication, deviceId, userAgent, ipAddress);
-		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, deviceId, userAgent, ipAddress);
+		String accessToken = jwtTokenUtil.generateAccessToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
+		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
 
-		refreshTokenService.revokeToken(hashService.hashToken(oldTokenString));
+		return transactionTemplate.execute(status -> {
 
-		refreshTokenService.saveRefreshToken(
-				authentication.getName(),
-				hashService.hashToken(refreshToken),
-				deviceId,
-				userAgent,
-				ipAddress,
-				Instant.now(),
-				Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(),ChronoUnit.HOURS)
-		);
+			refreshTokenService.revokeToken(hashService.hashToken(oldTokenString));
+			User user = userService.findByUsername(authentication.getName());
+			RefreshToken refreshTokenEntity = refreshTokenFactory.create(
+					user,
+					hashedRefreshToken,
+					fingerprint.deviceId(),
+					fingerprint.userAgent(),
+					fingerprint.ipAddress(),
+					Instant.now(),
+					Instant.now().plus(jwtTokenUtil.getTokenProperties().getRefreshTokenExpiryHours(), ChronoUnit.HOURS),
+					false);
+			refreshTokenService.saveRefreshToken(user,refreshTokenEntity);
+			return new AuthenticationResponse(
+					accessToken,
+					refreshToken,
+					Instant.now().plus(jwtTokenUtil.getTokenProperties().getAccessTokenExpiryHours(), ChronoUnit.HOURS),
+					authentication.getName(),
+					new HashSet<>(authentication.getAuthorities()),
+					"Token rotated successfully."
+			);
+		});
 
-		return new AuthenticationResponse(
-				accessToken,
-				refreshToken,
-				Instant.now().plus(jwtTokenUtil.getTokenProperties().getAccessTokenExpiryHours(), ChronoUnit.HOURS),
-				authentication.getName(),
-				new HashSet<>(authentication.getAuthorities()),
-				"Token rotated successfully."
-		);
 	}
 
 	@Override

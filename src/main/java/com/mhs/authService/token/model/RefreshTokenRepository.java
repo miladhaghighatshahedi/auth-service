@@ -17,6 +17,9 @@ package com.mhs.authService.token.model;
 
 import com.mhs.authService.iam.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
@@ -30,6 +33,12 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken,Long>
 
     Optional<RefreshToken> findByHashedToken(String hashedRefreshToken);
 
-    void deleteByUserAndDeviceId(User user, String deviceId);
+    @Modifying
+    @Query("DELETE FROM RefreshToken r WHERE r.user = :user AND r.deviceId = :deviceId")
+    void deleteByUserAndDeviceId(@Param("user")User user,@Param("deviceId") String deviceId);
+
+    @Modifying
+    @Query("DELETE FROM RefreshToken r WHERE r.hashedToken = :hashedToken")
+    void deleteByHashedToken(@Param("hashedToken") String hashedToken);
 
 }

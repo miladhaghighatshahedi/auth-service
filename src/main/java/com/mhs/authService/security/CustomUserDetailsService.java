@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -34,7 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username){
-        return new CustomUserDetails(userService.findByUsername(username));
+        return new CustomUserDetails(userService.findByUsernameWithAssociations(username));
     }
 
 }

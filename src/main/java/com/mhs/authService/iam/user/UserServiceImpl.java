@@ -18,7 +18,6 @@ package com.mhs.authService.iam.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Milad Haghighat Shahedi
@@ -31,20 +30,23 @@ class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    @Override
     public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException(String.format("error: username %s does not exists.",username)));
     }
 
     @Override
-    @Transactional
-    public User save(User user) {
-        return userRepository.save(user);
+    public User findByUsernameWithAssociations(String username) {
+        return userRepository.findByUsernameWithAssociation(username)
+                .orElseThrow(()-> new UsernameNotFoundException(String.format("error: username %s does not exists.",username)));
     }
 
-
     @Override
-    @Transactional(readOnly = true)
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }

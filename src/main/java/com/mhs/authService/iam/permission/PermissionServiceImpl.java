@@ -19,12 +19,10 @@ import com.mhs.authService.exception.error.DuplicateEntityException;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -42,7 +40,6 @@ class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    @Transactional
     public Permission findByRoleNameAndPermissionIfNotExistsCreate(String roleName, String permissionName) {
 
         Role role = roleService.findByNameOrCreate(roleName);
