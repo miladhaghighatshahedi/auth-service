@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Set;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -37,6 +36,8 @@ public class CustomUserDetails implements UserDetails {
 	private final boolean credentialsNonExpired;
 	private final boolean enabled;
 
+	private final User user;
+
 	public CustomUserDetails(User user) {
 		this.username = user.getUsername();
 		this.password = user.getPassword();
@@ -45,6 +46,7 @@ public class CustomUserDetails implements UserDetails {
 		this.credentialsNonExpired = true;
 		this.accountNonLocked = true;
 		this.enabled = true;
+		this.user = user;
 	}
 
 }

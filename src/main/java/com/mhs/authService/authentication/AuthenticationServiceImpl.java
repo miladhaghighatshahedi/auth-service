@@ -24,6 +24,7 @@ import com.mhs.authService.iam.role.RoleService;
 import com.mhs.authService.iam.user.User;
 import com.mhs.authService.iam.user.UserService;
 import com.mhs.authService.iam.user.factory.UserFactory;
+import com.mhs.authService.security.CustomUserDetails;
 import com.mhs.authService.token.JwtTokenUtil;
 import com.mhs.authService.token.dto.RefreshTokenRequest;
 import com.mhs.authService.token.model.RefreshToken;
@@ -112,7 +113,8 @@ class AuthenticationServiceImpl implements AuthenticationService{
 		String refreshToken = jwtTokenUtil.generateRefreshToken(authentication, fingerprint.deviceId(), fingerprint.userAgent(), fingerprint.ipAddress());
 		String hashedRefreshToken = hashService.hashToken(refreshToken);
 
-		User user = userService.findByUsername(authentication.getName());
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		User user = userDetails.getUser();
 
 		RefreshToken refreshTokenEntity = refreshTokenFactory.create(
 				user,
