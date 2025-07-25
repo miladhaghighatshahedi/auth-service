@@ -47,6 +47,7 @@ public class UserBuilder {
 				.usernameType(usernameType)
 				.password(encodedPassword)
 				.joinedDate(LocalDateTime.now())
+				.enabled(false)
 				.roles(roles)
 				.build();
 	}

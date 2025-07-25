@@ -19,10 +19,7 @@ import com.mhs.authService.authentication.resolver.HttpContextIpAddressResolver;
 import com.mhs.authService.authentication.security.bruteforce.LoginBruteForceService;
 import com.mhs.authService.util.encoding.CustomArgon2PasswordEncoder;
 import lombok.AllArgsConstructor;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -72,11 +69,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 			}
 
 			if(!userDetails.isEnabled()){
-				throw new BadCredentialsException("error: Invalid Credentials.");
-			}
-
-			if(!userDetails.isAccountNonLocked()){
-				throw new BadCredentialsException("error: Invalid Credentials.");
+				throw new DisabledException("Account is disabled, please verify the verification token that sent to your email or mobile.");
 			}
 
 			loginBruteForceService.onSuccess(ip,username);

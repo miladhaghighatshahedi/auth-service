@@ -26,7 +26,6 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
@@ -58,10 +57,7 @@ public class User {
     private LocalDateTime joinedDate;
 
     @Column(nullable = false)
-    private boolean accountNonLocked = true;
-
-    @Column(nullable = false)
-    private boolean enabled = true;
+    private boolean enabled;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

@@ -15,12 +15,15 @@
  */
 package com.mhs.authService.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Milad Haghighat Shahedi
@@ -31,10 +34,16 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
 	@Override
 	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException{
+
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		Map<String,String> errorMessage = new HashMap<>();
+		errorMessage.put("error","Forbidden");
+		errorMessage.put("message","Access denied.");
+
 		response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 		response.setContentType("application/json");
-		response.getWriter().write("""
-            { "error": "Forbidden", "message": "Access denied." }
-        """);
+		response.getWriter().write(mapper.writeValueAsString(errorMessage));
 	}
 }
