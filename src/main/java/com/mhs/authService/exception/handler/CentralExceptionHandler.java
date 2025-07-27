@@ -89,6 +89,11 @@ public class CentralExceptionHandler {
 		return ResponseEntity.badRequest().body(errors);
 	}
 
+	@ExceptionHandler(IllegalArgumentException.class)
+	public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException exception) {
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+	}
+
 	@ExceptionHandler(CredentialValidationException.class)
 	public ResponseEntity<List<ValidationError>> handleCredentialValidationException(CredentialValidationException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getErrors());
@@ -112,6 +117,16 @@ public class CentralExceptionHandler {
 				HttpStatus.LOCKED.value(),
 				false);
 		return ResponseEntity.status(HttpStatus.LOCKED).body(errorResponse);
+	}
+
+	@ExceptionHandler(OtpBlockedException.class)
+	public ResponseEntity<ExceptionResponse> handOtpBlockedException(OtpBlockedException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.TOO_MANY_REQUESTS.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorResponse);
 	}
 
 }

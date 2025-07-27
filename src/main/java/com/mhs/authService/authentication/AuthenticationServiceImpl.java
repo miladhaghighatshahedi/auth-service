@@ -15,10 +15,15 @@
  */
 package com.mhs.authService.authentication;
 
-import com.mhs.authService.authentication.dto.*;
+import com.mhs.authService.authentication.dto.AuthenticationRequest;
+import com.mhs.authService.authentication.dto.AuthenticationResponse;
+import com.mhs.authService.authentication.dto.LogoutResponse;
+import com.mhs.authService.authentication.dto.RegistrationResponse;
 import com.mhs.authService.authentication.security.fingerprint.AuthenticationRequestFingerprint;
 import com.mhs.authService.authentication.security.fingerprint.AuthenticationRequestFingerprintExtractor;
 import com.mhs.authService.authentication.validator.CredentialValidationService;
+import com.mhs.authService.authentication.verification.VerificationStrategyResolver;
+import com.mhs.authService.authentication.verification.dto.VerificationPayload;
 import com.mhs.authService.exception.error.RegistrationException;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
@@ -67,6 +72,7 @@ class AuthenticationServiceImpl implements AuthenticationService{
 	private final CredentialValidationService credentialValidationService;
 	private final AuthenticationRequestFingerprintExtractor authenticationRequestFingerprint;
 	private final TransactionTemplate transactionTemplate;
+	private final VerificationStrategyResolver verificationStrategyResolver;
 
 	@Override
 	public RegistrationResponse register(AuthenticationRequest authenticationRequest, HttpServletRequest httpServletRequest) {
@@ -86,6 +92,10 @@ class AuthenticationServiceImpl implements AuthenticationService{
 					Role roleUser = roleService.findByName("ROLE_USER");
 					User user = userFactory.createUser(username, rawPassword, Set.of(roleUser));
 					User savedUser = userService.save(user);
+
+					VerificationPayload verificationPayload = verificationStrategyResolver.generatePayLoad(user.getUsername(), user.getUsernameType());
+
+
 					return new RegistrationResponse(savedUser.getUsername(), "User registered successfully!");
 				} catch (DataIntegrityViolationException e) {
 					throw new RegistrationException("error: Username already exists. Please choose a different username.");
@@ -93,6 +103,9 @@ class AuthenticationServiceImpl implements AuthenticationService{
 					throw new RegistrationException("error: Database error occurred during registration. Please try again later.");
 				}
 			});
+
+
+
 		} catch (TransactionException e) {
 			throw new RegistrationException("Error: Unable to register user due to transaction failure.");
 		}

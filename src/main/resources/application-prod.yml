@@ -69,6 +69,20 @@ token:
   refresh-token-issuer: http://localhost:8081
   refresh-token-claim-type: refresh_token
 
+verificationToken:
+  secret-string: {JWT_VERIFICATION_SECRET}
+  token-type: {token_type}
+  expiration-time: 30
+
+otpCode:
+  prefix: otp_code
+  attempt-prefix: otp_attempt
+  block-prefix: otp_block_attempt
+  ttl: 1
+  attempt-ttl: 1
+  block-ttl: 30
+  max-attempts: 3
+
 logging:
   level:
     root: warn
