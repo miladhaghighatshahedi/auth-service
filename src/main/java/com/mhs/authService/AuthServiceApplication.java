@@ -15,7 +15,7 @@
  */
 package com.mhs.authService;
 
-import com.mhs.authService.token.RsaKeyProperties;
+import com.mhs.authService.token.core.RsaKeyProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

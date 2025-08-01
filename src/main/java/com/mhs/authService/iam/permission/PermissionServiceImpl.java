@@ -15,10 +15,10 @@
  */
 package com.mhs.authService.iam.permission;
 
-import com.mhs.authService.exception.error.DuplicateEntityException;
+import com.mhs.authService.iam.permission.exception.PermissionAlreadyExistsException;
+import com.mhs.authService.iam.permission.exception.PermissionNotFoundException;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Service;
  * @author Milad Haghighat Shahedi
  */
 
-@Service
+@Service("permissionService")
 @RequiredArgsConstructor
 class PermissionServiceImpl implements PermissionService {
 
@@ -36,7 +36,7 @@ class PermissionServiceImpl implements PermissionService {
     @Override
     public Permission findByNameAndRoleId(String name, long roleId) {
         return permissionRepository.findByNameAndRoleId(name,roleId)
-            .orElseThrow(() -> new EntityNotFoundException(String.format("error: permission with the give name %s does not exists.",name)));
+            .orElseThrow(() -> new PermissionNotFoundException(String.format("error: permission with the give name %s does not exists.",name)));
     }
 
     @Override
@@ -44,7 +44,7 @@ class PermissionServiceImpl implements PermissionService {
 
         Role role = roleService.findByNameOrCreate(roleName);
         permissionRepository.findByNameAndRoleId(permissionName, role.getId()).ifPresent(existingPermission -> {
-            throw new DuplicateEntityException(String.format("error: permission %s already exists for role %s ",permissionName,roleName));
+            throw new PermissionAlreadyExistsException(String.format("error: permission %s already exists for the role %s ",permissionName,roleName));
          });
 
         Permission permission = new Permission();

@@ -16,7 +16,6 @@
 package com.mhs.authService.authentication.security.ratelimit.enums;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 

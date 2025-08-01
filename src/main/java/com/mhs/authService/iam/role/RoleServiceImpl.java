@@ -15,16 +15,17 @@
  */
 package com.mhs.authService.iam.role;
 
-import com.mhs.authService.exception.error.EntityCreationException;
-import jakarta.persistence.EntityNotFoundException;
+import com.mhs.authService.iam.role.exception.RoleCreationException;
+import com.mhs.authService.iam.role.exception.RoleNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+
 /**
  * @author Milad Haghighat Shahedi
  */
 
-@Service
+@Service("roleService")
 @RequiredArgsConstructor
 class RoleServiceImpl implements RoleService {
 
@@ -33,7 +34,7 @@ class RoleServiceImpl implements RoleService {
     @Override
     public Role findByName(String name) {
         return roleRepository.findByName(name)
-                .orElseThrow(() -> new EntityNotFoundException(String.format("error: role with the given name %s does not exists.",name)));
+                .orElseThrow(() -> new RoleNotFoundException(String.format("error: role with the given name %s does not exists.",name)));
     }
 
     @Override
@@ -46,7 +47,7 @@ class RoleServiceImpl implements RoleService {
                     return roleRepository.save(role);
                 } catch (DataIntegrityViolationException exception) {
                      return roleRepository.findByName(name)
-                     .orElseThrow(() -> new EntityCreationException(
+                     .orElseThrow(() -> new RoleCreationException(
                              String.format("error:Failed to create or retrieve role '%s' due to a conflict.", name)));
                     }
         });

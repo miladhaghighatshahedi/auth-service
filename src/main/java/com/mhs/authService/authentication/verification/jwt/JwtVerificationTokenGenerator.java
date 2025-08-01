@@ -15,6 +15,9 @@
  */
 package com.mhs.authService.authentication.verification.jwt;
 
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
+
 /**
  * @author Milad Haghighat Shahedi
  */
@@ -23,7 +26,7 @@ public interface JwtVerificationTokenGenerator {
 
 	String generate(String email);
 
-	boolean validate(String token);
+	Jws<Claims> verify(String token);
 
 	String extractUsername(String token);
 

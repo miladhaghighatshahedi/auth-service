@@ -20,4 +20,4 @@ package com.mhs.authService.token.dto;
  * @author Milad Haghighat Shahedi
  */
 
-public record RefreshTokenRequest(String refreshToken){}
+public record RefreshTokenRequest(String refreshToken) implements RefreshTokenCarrier{}

@@ -80,9 +80,9 @@ verificationToken:
   expiration-time: 30
 
 otpCode:
-  prefix: otp_code
-  attempt-prefix: otp_attempt
-  block-prefix: otp_block_attempt
+  prefix: otp_code_
+  attempt-prefix: otp_attempt_
+  block-prefix: otp_block_attempt_
   ttl: 1
   attempt-ttl: 1
   block-ttl: 30

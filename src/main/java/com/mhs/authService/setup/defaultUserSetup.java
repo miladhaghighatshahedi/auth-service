@@ -15,11 +15,11 @@
  */
 package com.mhs.authService.setup;
 
-import com.mhs.authService.authentication.AuthenticationService;
-import com.mhs.authService.authentication.dto.AuthenticationRequest;
+import com.mhs.authService.authentication.register.RegisterService;
+import com.mhs.authService.authentication.register.dto.RegisterRequest;
 import com.mhs.authService.iam.permission.PermissionService;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -30,11 +30,11 @@ import org.springframework.transaction.annotation.Transactional;
  */
 
 //@Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class defaultUserSetup implements ApplicationRunner {
 
 	private final PermissionService permissionService;
-	private final AuthenticationService authenticationService;
+	private final RegisterService registerService;
 
 	@Override
 	@Transactional
@@ -63,8 +63,8 @@ public class defaultUserSetup implements ApplicationRunner {
 	}
 
 	private void registerUser(String username,String password,HttpServletRequest httpServletRequest){
-		AuthenticationRequest authenticationRequest = new AuthenticationRequest(username,password);
-		authenticationService.register(authenticationRequest,httpServletRequest);
+		RegisterRequest registerRequest = new RegisterRequest(username,password);
+		registerService.register(registerRequest,httpServletRequest);
 	}
 
 }

@@ -16,7 +16,6 @@
 package com.mhs.authService.authentication.security.bruteforce;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 

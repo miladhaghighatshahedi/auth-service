@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.verification.dto;
 
-import com.mhs.authService.iam.user.enums.UsernameType;
+import com.mhs.authService.user.enums.UsernameType;
 
 /**
  * @author Milad Haghighat Shahedi

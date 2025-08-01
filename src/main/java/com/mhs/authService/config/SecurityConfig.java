@@ -15,11 +15,11 @@
  */
 package com.mhs.authService.config;
 
-import com.mhs.authService.security.CustomAccessDeniedHandler;
-import com.mhs.authService.security.JwtAuthenticationEntryPoint;
-import com.mhs.authService.security.JwtAuthenticationFilter;
-import com.mhs.authService.token.JwtTokenUtil;
-import lombok.AllArgsConstructor;
+import com.mhs.authService.infrastructure.security.handler.CustomAccessDeniedHandler;
+import com.mhs.authService.infrastructure.security.jwt.JwtAuthenticationEntryPoint;
+import com.mhs.authService.infrastructure.security.jwt.JwtAuthenticationFilter;
+import com.mhs.authService.token.core.JwtTokenService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -39,10 +39,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final JwtTokenUtil jwtTokenUtil;
+	private final JwtTokenService jwtTokenService;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
@@ -59,7 +59,7 @@ public class SecurityConfig {
 				.exceptionHandling(exception -> exception
 						.authenticationEntryPoint(jwtAuthenticationEntryPoint)
 						.accessDeniedHandler(customAccessDeniedHandler)   )
-				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenUtil), UsernamePasswordAuthenticationFilter.class)
+				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
 

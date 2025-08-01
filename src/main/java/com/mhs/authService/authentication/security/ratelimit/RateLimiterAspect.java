@@ -16,26 +16,25 @@
 package com.mhs.authService.authentication.security.ratelimit;
 
 import com.mhs.authService.authentication.security.ratelimit.annotation.RateLimit;
-import com.mhs.authService.exception.error.RateLimitExceededException;
-import lombok.AllArgsConstructor;
+import com.mhs.authService.authentication.security.ratelimit.exception.RateLimitExceededException;
+import com.mhs.authService.infrastructure.cache.RedisCacheService;
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import java.time.Duration;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 @Aspect
 @Component
-@AllArgsConstructor
-public class RateLimiterAspect {
+@RequiredArgsConstructor
+class RateLimiterAspect {
 
-    private final RedisTemplate<String,String> redisTemplate;
+    private final RedisCacheService redisCacheService;
     private final RateLimiterKeyBuilder keyBuilder;
 
     @Around("@annotation(rateLimit)")
@@ -43,9 +42,10 @@ public class RateLimiterAspect {
 
         String key = keyBuilder.buildCompositeKey(rateLimit.identifiers());
 
-        long incrementCount = redisTemplate.opsForValue().increment(key);
+        long incrementCount = redisCacheService.increment(key);
+
         if (incrementCount == 1){
-            redisTemplate.expire(key, Duration.ofMinutes(rateLimit.timeFrameInMinutes()));
+            redisCacheService.expire(key,Duration.ofMinutes(rateLimit.timeFrameInMinutes()));
         }
 
         if(incrementCount > rateLimit.maxRequests()){

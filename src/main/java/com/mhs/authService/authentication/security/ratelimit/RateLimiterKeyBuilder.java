@@ -16,19 +16,19 @@
 package com.mhs.authService.authentication.security.ratelimit;
 
 import com.mhs.authService.authentication.security.ratelimit.enums.IdentifierType;
-import lombok.AllArgsConstructor;
+import com.mhs.authService.authentication.security.ratelimit.resolver.IdentifierResolver;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 @Component
-@AllArgsConstructor
-public class RateLimiterKeyBuilder {
+@RequiredArgsConstructor
+class RateLimiterKeyBuilder {
 
     private final List<IdentifierResolver> resolvers;
 
