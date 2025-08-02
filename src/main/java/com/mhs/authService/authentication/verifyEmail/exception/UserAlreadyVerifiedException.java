@@ -13,22 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.user;
+package com.mhs.authService.authentication.verifyEmail.exception;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface UserService {
+public class UserAlreadyVerifiedException extends RuntimeException{
 
-    User save(User user);
-
-    User findByUsername(String username);
-
-    User findByUsernameWithAssociations(String username);
-
-    boolean existsByUsername(String username);
-
-    void enableByUsername(String username);
+	public UserAlreadyVerifiedException(String message) {
+		super(message);
+	}
 
 }

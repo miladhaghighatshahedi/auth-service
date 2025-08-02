@@ -16,6 +16,7 @@
 package com.mhs.authService.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -37,5 +38,9 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Query(value = "SELECT EXISTS(SELECT 1 FROM tbl_credential WHERE username= :username)",nativeQuery = true)
     boolean existsByUsername(@Param("username") String username);
+
+    @Modifying
+    @Query("UPDATE User u SET u.enabled = TRUE WHERE u.username = :username")
+    int enableByUsername(@Param("username") String username);
 
 }

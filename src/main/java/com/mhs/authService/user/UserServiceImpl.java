@@ -51,4 +51,10 @@ class UserServiceImpl implements UserService {
         return userRepository.existsByUsername(username);
     }
 
+    @Override
+    public void enableByUsername(String username) {
+        int updatedRows = userRepository.enableByUsername(username);
+        if (updatedRows == 0) throw new UsernameNotFoundException(String.format("error: username %s does not exists during verification.",username));
+    }
+
 }

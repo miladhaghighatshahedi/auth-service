@@ -40,12 +40,14 @@ class RateLimiterAspect {
     @Around("@annotation(rateLimit)")
     public Object handleRateLimit(ProceedingJoinPoint joinPoint, RateLimit rateLimit) throws Throwable{
 
-        String key = keyBuilder.buildCompositeKey(rateLimit.identifiers());
+        String identifier = keyBuilder.buildCompositeKey(rateLimit.identifiers());
 
-        long incrementCount = redisCacheService.increment(key);
+        String redisKey = rateLimit.key() + identifier;
+
+        long incrementCount = redisCacheService.increment(redisKey);
 
         if (incrementCount == 1){
-            redisCacheService.expire(key,Duration.ofMinutes(rateLimit.timeFrameInMinutes()));
+            redisCacheService.expire(redisKey,Duration.ofMinutes(rateLimit.timeFrameInMinutes()));
         }
 
         if(incrementCount > rateLimit.maxRequests()){

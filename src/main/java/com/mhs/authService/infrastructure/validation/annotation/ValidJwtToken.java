@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.user;
+package com.mhs.authService.infrastructure.validation.annotation;
+
+import com.mhs.authService.infrastructure.validation.validator.JwtTokenConstraintValidator;
+import jakarta.validation.Constraint;
+import org.springframework.messaging.handler.annotation.Payload;
+import java.lang.annotation.*;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface UserService {
+@Target({ ElementType.PARAMETER, ElementType.FIELD })
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = JwtTokenConstraintValidator.class)
+public @interface ValidJwtToken {
 
-    User save(User user);
+	String message() default "Invalid JWT token";
 
-    User findByUsername(String username);
+	Class<?>[] groups() default {};
 
-    User findByUsernameWithAssociations(String username);
-
-    boolean existsByUsername(String username);
-
-    void enableByUsername(String username);
+	Class<? extends Payload>[] payload() default {};
 
 }

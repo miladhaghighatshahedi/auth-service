@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.user;
+package com.mhs.authService.authentication.verifyEmail.dto;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface UserService {
-
-    User save(User user);
-
-    User findByUsername(String username);
-
-    User findByUsernameWithAssociations(String username);
-
-    boolean existsByUsername(String username);
-
-    void enableByUsername(String username);
-
-}
+public record EmailVerificationResponse(String username, String response) { }

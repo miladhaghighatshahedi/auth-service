@@ -21,6 +21,8 @@ import com.mhs.authService.authentication.verification.jwt.exception.InvalidVeri
 import com.mhs.authService.authentication.verification.jwt.exception.VerificationTokenExpiredException;
 import com.mhs.authService.authentication.verification.otp.exception.OtpBlockedException;
 import com.mhs.authService.authentication.security.ratelimit.exception.RateLimitExceededException;
+import com.mhs.authService.authentication.verifyEmail.exception.EmailVerificationException;
+import com.mhs.authService.authentication.verifyEmail.exception.UserAlreadyVerifiedException;
 import com.mhs.authService.infrastructure.exception.model.ExceptionResponse;
 import com.mhs.authService.infrastructure.validation.dto.ValidationError;
 import com.mhs.authService.iam.permission.exception.PermissionAlreadyExistsException;
@@ -187,6 +189,26 @@ public class CentralExceptionHandler {
 				HttpStatus.BAD_REQUEST.value(),
 				false);
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+	@ExceptionHandler(EmailVerificationException.class)
+	public  ResponseEntity<ExceptionResponse> handleEmailVerificationException(EmailVerificationException exception,WebRequest request) {
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
+
+	@ExceptionHandler(UserAlreadyVerifiedException.class)
+	public  ResponseEntity<ExceptionResponse> handleUserAlreadyVerifiedException(UserAlreadyVerifiedException exception,WebRequest request) {
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.OK.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.OK).body(errorResponse);
 	}
 
 }
