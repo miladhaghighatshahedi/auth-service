@@ -17,12 +17,15 @@ package com.mhs.authService.infrastructure.exception.handler;
 
 import com.mhs.authService.authentication.register.exception.CredentialValidationException;
 import com.mhs.authService.authentication.register.exception.RegistrationException;
+import com.mhs.authService.authentication.resendOtp.exception.SmsOtpTooManyRequestException;
 import com.mhs.authService.authentication.verification.jwt.exception.InvalidVerificationTokenException;
 import com.mhs.authService.authentication.verification.jwt.exception.VerificationTokenExpiredException;
-import com.mhs.authService.authentication.verification.otp.exception.OtpBlockedException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpInvalidException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpBlockedException;
 import com.mhs.authService.authentication.security.ratelimit.exception.RateLimitExceededException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpExpiredException;
 import com.mhs.authService.authentication.verifyEmail.exception.EmailVerificationException;
-import com.mhs.authService.authentication.verifyEmail.exception.UserAlreadyVerifiedException;
+import com.mhs.authService.authentication.verification.exception.UserAlreadyVerifiedException;
 import com.mhs.authService.infrastructure.exception.model.ExceptionResponse;
 import com.mhs.authService.infrastructure.validation.dto.ValidationError;
 import com.mhs.authService.iam.permission.exception.PermissionAlreadyExistsException;
@@ -152,7 +155,7 @@ public class CentralExceptionHandler {
 	}
 
 	@ExceptionHandler(LockedException.class)
-	public ResponseEntity<ExceptionResponse> handLockedException(LockedException exception, WebRequest request){
+	public ResponseEntity<ExceptionResponse> handleLockedException(LockedException exception, WebRequest request){
 		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
 				LocalDateTime.now(),
 				request.getDescription(false),
@@ -161,8 +164,38 @@ public class CentralExceptionHandler {
 		return ResponseEntity.status(HttpStatus.LOCKED).body(errorResponse);
 	}
 
-	@ExceptionHandler(OtpBlockedException.class)
-	public ResponseEntity<ExceptionResponse> handOtpBlockedException(OtpBlockedException exception, WebRequest request){
+	@ExceptionHandler(SmsOtpBlockedException.class)
+	public ResponseEntity<ExceptionResponse> handleOtpBlockedException(SmsOtpBlockedException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.TOO_MANY_REQUESTS.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorResponse);
+	}
+
+	@ExceptionHandler(SmsOtpExpiredException.class)
+	public ResponseEntity<ExceptionResponse> handleOtpExpiredException(SmsOtpExpiredException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.UNAUTHORIZED.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+	}
+
+	@ExceptionHandler(SmsOtpInvalidException.class)
+	public ResponseEntity<ExceptionResponse> handleInvalidOtpException(SmsOtpInvalidException exception, WebRequest request){
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.BAD_REQUEST.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+	}
+
+	@ExceptionHandler(SmsOtpTooManyRequestException.class)
+	public ResponseEntity<ExceptionResponse> handleSmsOtpTooManyRequestException(SmsOtpTooManyRequestException exception, WebRequest request){
 		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
 				LocalDateTime.now(),
 				request.getDescription(false),

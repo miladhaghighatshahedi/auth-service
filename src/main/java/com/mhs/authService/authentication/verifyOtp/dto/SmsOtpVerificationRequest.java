@@ -13,16 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verifyEmail.exception;
+package com.mhs.authService.authentication.verifyOtp.dto;
+
+import com.mhs.authService.infrastructure.validation.annotation.ValidMobile;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public class UserAlreadyVerifiedException extends RuntimeException{
-
-	public UserAlreadyVerifiedException(String message) {
-		super(message);
-	}
-
-}
+public record SmsOtpVerificationRequest(@ValidMobile  String mobile, String otpCode) { }
