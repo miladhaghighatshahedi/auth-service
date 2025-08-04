@@ -21,7 +21,7 @@ import com.mhs.authService.authentication.register.exception.RegistrationExcepti
 import com.mhs.authService.authentication.register.validator.CredentialValidationService;
 import com.mhs.authService.authentication.security.bruteforce.register.RegisterBruteForceService;
 import com.mhs.authService.authentication.verification.dto.VerificationPayload;
-import com.mhs.authService.authentication.verification.strategy.VerificationStrategyResolver;
+import com.mhs.authService.authentication.verification.strategy.VerificationStrategyResolverService;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
 import com.mhs.authService.infrastructure.ip.IpAddressResolverService;
@@ -50,7 +50,7 @@ public class RegisterServiceImpl implements RegisterService{
 	private final RoleService roleService;
 	private final UserFactory userFactory;
 	private final TransactionTemplate transactionTemplate;
-	private final VerificationStrategyResolver verificationStrategyResolver;
+	private final VerificationStrategyResolverService verificationStrategyResolver;
 	private final CredentialValidationService credentialValidationService;
 	private final RegisterBruteForceService registerBruteForceService;
 	private final IpAddressResolverService ipAddressResolverService;

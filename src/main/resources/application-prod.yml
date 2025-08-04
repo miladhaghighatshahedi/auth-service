@@ -75,13 +75,21 @@ verificationToken:
   expiration-time: 30
 
 otpCode:
-  prefix: otp_code
-  attempt-prefix: otp_attempt
-  block-prefix: otp_block_attempt
+  prefix: otp_code_
+  attempt-prefix: otp_attempt_
+  block-prefix: otp_block_attempt_
   ttl: 1
   attempt-ttl: 1
   block-ttl: 30
   max-attempts: 3
+
+resendVerification:
+  sms_otp-coolDown-prefix: otp_resend_coolDown_
+  sms_otp-count-key-prefix: otp_resend_count_
+  sms_otp-max-attempts: 3
+  sms_otp-ttl: 30
+  sms_otp-block-ttl: 30
+
 
 logging:
   level:

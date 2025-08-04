@@ -15,13 +15,14 @@
  */
 package com.mhs.authService.infrastructure.validation.validator;
 
-import com.mhs.authService.infrastructure.identifier.matcher.MobileRegexMatcher;
+import com.mhs.authService.infrastructure.identifier.matcher.UsernameTypeMatcher;
 import com.mhs.authService.infrastructure.validation.annotation.ValidMobile;
 import com.mhs.authService.infrastructure.validation.dto.ValidationError;
 import com.mhs.authService.infrastructure.validation.strategy.mobile.MobileValidationStrategy;
+import com.mhs.authService.infrastructure.validation.util.MobileValidatorStrategyComponent;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.Optional;
@@ -31,21 +32,28 @@ import java.util.Optional;
  */
 
 @Component
-@RequiredArgsConstructor
 public class MobileConstraintValidator implements ConstraintValidator<ValidMobile,String> {
 
-	private final MobileRegexMatcher matcher;
+	private final UsernameTypeMatcher matcher;
 	private final List<MobileValidationStrategy> mobileValidationStrategy;
+	private final MobileValidatorStrategyComponent mobileValidatorStrategyComponent;
+
+	public MobileConstraintValidator(@Qualifier("mobileRegexMatcher") UsernameTypeMatcher matcher,
+	                                 List<MobileValidationStrategy> mobileValidationStrategy,
+	                                 MobileValidatorStrategyComponent mobileValidatorStrategyComponent) {
+		this.matcher = matcher;
+		this.mobileValidationStrategy = mobileValidationStrategy;
+		this.mobileValidatorStrategyComponent = mobileValidatorStrategyComponent;
+	}
 
 	@Override
 	public boolean isValid(String mobile, ConstraintValidatorContext constraintValidatorContext) {
 
 		if(mobile == null || mobile.isBlank()){
 			constraintValidatorContext.disableDefaultConstraintViolation();
-			constraintValidatorContext.buildConstraintViolationWithTemplate("mobile number can not be null or empty").addConstraintViolation();
+			constraintValidatorContext.buildConstraintViolationWithTemplate("mobile number can not be null or empty.").addConstraintViolation();
 			return false;
 		}
-
 
 		if(!matcher.determine(mobile)){
 			constraintValidatorContext.disableDefaultConstraintViolation();
@@ -53,11 +61,7 @@ public class MobileConstraintValidator implements ConstraintValidator<ValidMobil
 			return false;
 		}
 
-		Optional<ValidationError> validationError = mobileValidationStrategy.stream()
-				.map(strategy -> strategy.isValid(mobile))
-				.filter(Optional::isPresent)
-				.findFirst()
-				.orElse(Optional.empty());
+		Optional<ValidationError> validationError = mobileValidatorStrategyComponent.validate(mobile,mobileValidationStrategy);
 
 		if(validationError.isPresent()){
 			constraintValidatorContext.disableDefaultConstraintViolation();

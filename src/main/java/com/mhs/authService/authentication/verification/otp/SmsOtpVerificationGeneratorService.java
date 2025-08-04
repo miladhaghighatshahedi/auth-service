@@ -15,7 +15,9 @@
  */
 package com.mhs.authService.authentication.verification.otp;
 
-import com.mhs.authService.authentication.verification.otp.exception.OtpBlockedException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpInvalidException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpBlockedException;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpExpiredException;
 import com.mhs.authService.authentication.verification.otp.store.SmsOtpStore;
 import com.mhs.authService.authentication.verification.otp.strategy.SmsOtpSecurityCodeGenerator;
 import com.mhs.authService.authentication.verification.otp.tracker.SmsOtpAttemptTracker;
@@ -49,25 +51,23 @@ class SmsOtpVerificationGeneratorService implements SmsOtpVerificationGenerator 
 	}
 
 	@Override
-	public boolean verify(String mobile, String retrievedCode) {
+	public void verify(String mobile, String retrievedCode) {
 
 		if (attemptTracker.isBlocked(mobile)){
-			throw new OtpBlockedException("Too many failed attempts. Try again in a few minutes.");
+			throw new SmsOtpBlockedException("error: Too many failed attempts. Try again in a few minutes.");
 		}
 
 		String key = smsOtpProperties.getPrefix() + mobile;
+		String storedOtpCode = smsOtpStore.retrieve(key).orElseThrow(() -> new SmsOtpExpiredException("error: OTP has expired."));
 
-		return smsOtpStore.retrieve(key)
-				.filter(otpCode -> otpCode.equals(retrievedCode))
-				.map(match -> {
-					smsOtpStore.remove(key);
-					attemptTracker.reset(mobile);
-					return true;
-				})
-				.orElseGet(() -> {
-					attemptTracker.increment(mobile);
-					return false;
-				});
+		if(!storedOtpCode.equals(retrievedCode)){
+			attemptTracker.increment(mobile);
+			throw new SmsOtpInvalidException("error: incorrect otpCode.");
+		}
+
+		smsOtpStore.remove(key);
+		attemptTracker.reset(mobile);
+
 	}
 
 }

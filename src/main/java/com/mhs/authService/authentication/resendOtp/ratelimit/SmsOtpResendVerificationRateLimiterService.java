@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.strategy;
-
-import com.mhs.authService.authentication.verification.dto.VerificationPayload;
-import com.mhs.authService.user.enums.UsernameType;
+package com.mhs.authService.authentication.resendOtp.ratelimit;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface VerificationStrategyResolverService {
+public interface SmsOtpResendVerificationRateLimiterService {
 
-	VerificationPayload generatePayLoad(String username, UsernameType usernameType);
+	void resendVerificationAllowed(String mobile);
 
 }

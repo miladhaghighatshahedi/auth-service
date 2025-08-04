@@ -16,6 +16,7 @@
 package com.mhs.authService.infrastructure.identifier.matcher;
 
 import com.mhs.authService.user.enums.UsernameType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
  */
 
 @Component
+@Qualifier("mobileRegexMatcher")
 public class MobileRegexMatcher implements UsernameTypeMatcher {
 
     private static final Pattern MOBILE_NUMBER_PATTERN = Pattern.compile("^09(0[1-5]|[1-3]\\d|2[0-2]|98)\\d{7}$");

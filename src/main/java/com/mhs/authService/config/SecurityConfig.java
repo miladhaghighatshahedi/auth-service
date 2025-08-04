@@ -53,11 +53,12 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.authorizeHttpRequests(auth -> auth
 						.requestMatchers( "/auth/register",
-									    "/auth/login",
-										"/auth/rotate",
-										"/auth/logout",
-										"/auth/email/verify",
-										"/auth/otp/verify").permitAll()
+									      "/auth/login",
+										  "/auth/rotate",
+										  "/auth/logout",
+										  "/auth/email/verify",
+										  "/auth/otp/verify",
+							        	  "/auth/otp/resend").permitAll()
 						.anyRequest().authenticated()
 				)
 
@@ -67,7 +68,6 @@ public class SecurityConfig {
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class)
 				.build();
 	}
-
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {

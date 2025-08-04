@@ -19,8 +19,8 @@ package com.mhs.authService.authentication.verification.otp.exception;
  * @author Milad Haghighat Shahedi
  */
 
-public class OtpBlockedException extends RuntimeException{
+public class SmsOtpInvalidException extends RuntimeException{
 
-	public OtpBlockedException(String message) { super(message); }
+	public SmsOtpInvalidException(String message) { super(message); }
 
 }

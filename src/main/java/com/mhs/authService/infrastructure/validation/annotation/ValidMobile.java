@@ -32,7 +32,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = MobileConstraintValidator.class)
 public @interface ValidMobile {
 
-	String message() default "Number format must be a valid Iranian mobile number";
+	String message() default "Mobile must be a valid Iranian mobile number.";
 
 	Class<?>[] groups() default {};
 

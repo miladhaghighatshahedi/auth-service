@@ -18,7 +18,7 @@ package com.mhs.authService.authentication.verifyEmail;
 import com.mhs.authService.authentication.verification.jwt.JwtVerificationTokenGenerator;
 import com.mhs.authService.authentication.verifyEmail.dto.EmailVerificationResponse;
 import com.mhs.authService.authentication.verifyEmail.exception.EmailVerificationException;
-import com.mhs.authService.authentication.verifyEmail.exception.UserAlreadyVerifiedException;
+import com.mhs.authService.authentication.verification.exception.UserAlreadyVerifiedException;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 @Service("emailVerificationService")
 @RequiredArgsConstructor
-public class EmailVerificationServiceImpl implements EmailVerificationService {
+class EmailVerificationServiceImpl implements EmailVerificationService {
 
 	private final JwtVerificationTokenGenerator jwtVerificationTokenGenerator;
 	private final UserService userService;
@@ -51,7 +51,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
 		User user = userService.findByUsername(extractUsername);
 		if(user.isEnabled()){
-			throw new UserAlreadyVerifiedException("user already verified.");
+			throw new UserAlreadyVerifiedException("error: user already verified.");
 		}
 
 		try {

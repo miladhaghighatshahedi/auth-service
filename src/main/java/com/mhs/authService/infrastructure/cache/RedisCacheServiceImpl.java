@@ -38,7 +38,7 @@ class RedisCacheServiceImpl implements RedisCacheService{
 
 	@Override
 	public Optional<String> get(String key) {
-		return Optional.ofNullable(redisTemplate.opsForValue().get(key));
+		return Optional.of(redisTemplate.opsForValue().get(key));
 	}
 
 	@Override

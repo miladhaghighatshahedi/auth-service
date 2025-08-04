@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.strategy;
+package com.mhs.authService.authentication.resendOtp.dto;
 
-import com.mhs.authService.authentication.verification.dto.VerificationPayload;
-import com.mhs.authService.user.enums.UsernameType;
+import com.mhs.authService.infrastructure.validation.annotation.ValidMobile;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface VerificationStrategyResolverService {
-
-	VerificationPayload generatePayLoad(String username, UsernameType usernameType);
-
-}
+public record SmsOtpResendVerificationRequest(@ValidMobile String mobile) { }

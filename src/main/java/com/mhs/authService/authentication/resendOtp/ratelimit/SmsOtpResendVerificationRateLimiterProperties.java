@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.infrastructure.validation.strategy.mobile;
+package com.mhs.authService.authentication.resendOtp.ratelimit;
 
-import com.mhs.authService.infrastructure.validation.dto.ValidationError;
-import org.springframework.core.annotation.Order;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import java.util.Optional;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
 @Component
-@Order(2)
-class MobileLength implements MobileValidationStrategy {
-
-	private static final int MOBILE_EXACT_LENGTH = 11;
-
-	@Override
-	public Optional<ValidationError> isValid(String mobile) {
-		int mobileLength = mobile.replace("+","").length();
-		if(mobileLength != MOBILE_EXACT_LENGTH){
-			return Optional.of(
-					new ValidationError(String.format("Mobile number must be exactly %s digits",MOBILE_EXACT_LENGTH), "USERNAME", "MOBILE_NUMBER_INVALID"));
-		}
-		return Optional.empty();
-	}
-
+@ConfigurationProperties(prefix = "resend-verification")
+@Data
+public class SmsOtpResendVerificationRateLimiterProperties {
+	private String smsOtpCoolDownPrefix;
+	private String smsOtpCountKeyPrefix;
+	private int smsOtpTtl;
+	private int smsOtpMaxAttempts;
+	private int smsOtpBlockTtl;
 }

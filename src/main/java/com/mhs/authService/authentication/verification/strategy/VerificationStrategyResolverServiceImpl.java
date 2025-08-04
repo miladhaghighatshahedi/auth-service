@@ -17,13 +17,26 @@ package com.mhs.authService.authentication.verification.strategy;
 
 import com.mhs.authService.authentication.verification.dto.VerificationPayload;
 import com.mhs.authService.user.enums.UsernameType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import java.util.List;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface VerificationStrategyResolverService {
+@Service("verificationStrategyResolverService")
+@RequiredArgsConstructor
+class VerificationStrategyResolverServiceImpl implements VerificationStrategyResolverService {
 
-	VerificationPayload generatePayLoad(String username, UsernameType usernameType);
+	private final List<VerificationStrategy> strategies;
+
+	public VerificationPayload generatePayLoad(String username, UsernameType usernameType){
+		return strategies.stream()
+				.filter(strategy -> strategy.supports(usernameType))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("UsernameType not Supported."))
+				.generate(username);
+	}
 
 }

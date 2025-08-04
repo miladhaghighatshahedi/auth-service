@@ -23,6 +23,6 @@ public interface SmsOtpVerificationGenerator {
 
 	String generate(String mobile);
 
-	boolean verify(String phoneNumber, String retrievedCode);
+	void verify(String phoneNumber, String retrievedCode);
 
 }

@@ -16,6 +16,7 @@
 package com.mhs.authService.infrastructure.identifier.matcher;
 
 import com.mhs.authService.user.enums.UsernameType;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import java.util.regex.Pattern;
 
@@ -24,6 +25,7 @@ import java.util.regex.Pattern;
  */
 
 @Component
+@Qualifier("emailRegexMatcher")
 public class EmailRegexMatcher implements UsernameTypeMatcher {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^[\\w.%+-]+@[\\w.-]+\\.[a-zA-Z]{2,}$",Pattern.CASE_INSENSITIVE);

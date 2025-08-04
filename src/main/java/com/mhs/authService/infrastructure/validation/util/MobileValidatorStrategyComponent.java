@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.infrastructure.validation.strategy.mobile;
+package com.mhs.authService.infrastructure.validation.util;
 
 import com.mhs.authService.infrastructure.validation.dto.ValidationError;
-import org.springframework.core.annotation.Order;
+import com.mhs.authService.infrastructure.validation.strategy.mobile.MobileValidationStrategy;
 import org.springframework.stereotype.Component;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -25,19 +26,14 @@ import java.util.Optional;
  */
 
 @Component
-@Order(2)
-class MobileLength implements MobileValidationStrategy {
+public class MobileValidatorStrategyComponent {
 
-	private static final int MOBILE_EXACT_LENGTH = 11;
-
-	@Override
-	public Optional<ValidationError> isValid(String mobile) {
-		int mobileLength = mobile.replace("+","").length();
-		if(mobileLength != MOBILE_EXACT_LENGTH){
-			return Optional.of(
-					new ValidationError(String.format("Mobile number must be exactly %s digits",MOBILE_EXACT_LENGTH), "USERNAME", "MOBILE_NUMBER_INVALID"));
-		}
-		return Optional.empty();
+	public Optional<ValidationError> validate(String mobile, List<MobileValidationStrategy> strategies){
+		return strategies.stream()
+				.map(strategy -> strategy.isValid(mobile))
+				.filter(Optional::isPresent)
+				.findFirst()
+				.orElse(Optional.empty());
 	}
 
 }
