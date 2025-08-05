@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.infrastructure.security.auth;
 
-import com.mhs.authService.authentication.security.bruteforce.login.LoginBruteForceService;
+import com.mhs.authService.authentication.login.bruteforce.LoginBruteForceService;
 import com.mhs.authService.infrastructure.encryption.CustomArgon2PasswordEncoder;
 import com.mhs.authService.infrastructure.ip.HttpContextIpAddressExtractorService;
 import lombok.RequiredArgsConstructor;

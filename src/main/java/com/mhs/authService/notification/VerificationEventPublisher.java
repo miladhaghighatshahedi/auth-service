@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.notification;
 
-import com.mhs.authService.authentication.verification.dto.VerificationPayload;
+import com.mhs.authService.infrastructure.verification.dto.VerificationPayload;
 
 /**
  * @author Milad Haghighat Shahedi

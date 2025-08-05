@@ -15,8 +15,6 @@
  */
 package com.mhs.authService.infrastructure.validation.validator;
 
-import com.mhs.authService.authentication.verification.jwt.JwtVerificationTokenGenerator;
-import com.mhs.authService.authentication.verifyEmail.exception.EmailVerificationException;
 import com.mhs.authService.infrastructure.validation.annotation.ValidJwtToken;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -29,19 +27,22 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JwtTokenConstraintValidator implements ConstraintValidator<ValidJwtToken,String> {
 
-	private final JwtVerificationTokenGenerator jwtVerificationTokenGenerator;
-
 	@Override
 	public boolean isValid(String token, ConstraintValidatorContext constraintValidatorContext) {
 
 		if (token == null || token.isBlank()) {
-			throw new EmailVerificationException("error: Token is missing or blank.");
+			constraintValidatorContext.disableDefaultConstraintViolation();
+			constraintValidatorContext.buildConstraintViolationWithTemplate("jwt token can not be null or empty.").addConstraintViolation();
+			return false;
 		}
 
-		jwtVerificationTokenGenerator.verify(token);
+		if (!token.matches("^[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+\\.[A-Za-z0-9-_]+$")) {
+			constraintValidatorContext.disableDefaultConstraintViolation();
+			constraintValidatorContext.buildConstraintViolationWithTemplate("Invalid JWT token format.").addConstraintViolation();
+			return false;
+		}
 
-		String[] parts = token.split("\\.");
-		return parts.length == 3;
-
+		return true;
 	}
+
 }

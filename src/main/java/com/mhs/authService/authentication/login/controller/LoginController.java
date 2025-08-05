@@ -18,9 +18,10 @@ package com.mhs.authService.authentication.login.controller;
 import com.mhs.authService.authentication.login.LoginService;
 import com.mhs.authService.authentication.login.dto.LoginRequest;
 import com.mhs.authService.authentication.login.dto.LoginResponse;
-import com.mhs.authService.authentication.security.ratelimit.annotation.RateLimit;
-import com.mhs.authService.authentication.security.ratelimit.enums.IdentifierType;
+import com.mhs.authService.infrastructure.ratelimit.annotation.RateLimit;
+import com.mhs.authService.infrastructure.ratelimit.enums.IdentifierType;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,7 +45,7 @@ public class LoginController {
 			    timeFrameInMinutes = 15,
 			    identifiers = {IdentifierType.IP})
 	@PostMapping("/auth/login")
-	public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
+	public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
 		return ResponseEntity.ok(loginService.login(loginRequest,httpServletRequest));
 	}
 

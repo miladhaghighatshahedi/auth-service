@@ -89,12 +89,19 @@ otpCode:
   block-ttl: 30
   max-attempts: 3
 
-resendVerification:
-  sms_otp-coolDown-prefix: otp_resend_coolDown_
-  sms_otp-count-key-prefix: otp_resend_count_
-  sms_otp-max-attempts: 3
-  sms_otp-ttl: 30
-  sms_otp-block-ttl: 30
+otpResendVerification:
+  sms-otp-coolDown-prefix: otp_resend_coolDown_
+  sms-otp-count-key-prefix: otp_resend_count_
+  sms-otp_max-attempts: 3
+  sms-otp-ttl: 30
+  sms-otp-block-ttl: 30
+
+emailResendVerification:
+  email-coolDown-prefix: email_resend_coolDown_
+  email-count-key-prefix: email_resend_count_
+  email-max-attempts: 3
+  email-ttl: 30
+  email-block-ttl: 30
 
 logging:
   level:

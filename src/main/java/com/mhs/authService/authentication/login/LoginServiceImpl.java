@@ -17,8 +17,8 @@ package com.mhs.authService.authentication.login;
 
 import com.mhs.authService.authentication.login.dto.LoginRequest;
 import com.mhs.authService.authentication.login.dto.LoginResponse;
-import com.mhs.authService.authentication.security.fingerprint.RequestFingerprint;
-import com.mhs.authService.authentication.security.fingerprint.RequestFingerprintExtractor;
+import com.mhs.authService.infrastructure.fingerprint.RequestFingerprint;
+import com.mhs.authService.infrastructure.fingerprint.RequestFingerprintExtractor;
 import com.mhs.authService.infrastructure.hash.TokenHashService;
 import com.mhs.authService.infrastructure.security.auth.CustomUserDetails;
 import com.mhs.authService.token.core.JwtTokenProperties;

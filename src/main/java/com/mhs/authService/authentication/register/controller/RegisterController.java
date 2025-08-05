@@ -18,8 +18,8 @@ package com.mhs.authService.authentication.register.controller;
 import com.mhs.authService.authentication.register.RegisterService;
 import com.mhs.authService.authentication.register.dto.RegisterRequest;
 import com.mhs.authService.authentication.register.dto.RegisterResponse;
-import com.mhs.authService.authentication.security.ratelimit.annotation.RateLimit;
-import com.mhs.authService.authentication.security.ratelimit.enums.IdentifierType;
+import com.mhs.authService.infrastructure.ratelimit.annotation.RateLimit;
+import com.mhs.authService.infrastructure.ratelimit.enums.IdentifierType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ public class RegisterController {
 			    timeFrameInMinutes = 60,
 			    identifiers = {IdentifierType.IP})
 	@PostMapping("/auth/register")
-	public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest registerRequest, HttpServletRequest httpServletRequest){
+	public ResponseEntity<RegisterResponse> register( @RequestBody @Valid RegisterRequest registerRequest, HttpServletRequest httpServletRequest){
 		return ResponseEntity.status(HttpStatus.CREATED).body(registerService.register(registerRequest,httpServletRequest));
 	}
 

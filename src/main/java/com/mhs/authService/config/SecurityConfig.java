@@ -57,6 +57,7 @@ public class SecurityConfig {
 										  "/auth/rotate",
 										  "/auth/logout",
 										  "/auth/email/verify",
+								          "/auth/email/resend",
 										  "/auth/otp/verify",
 							        	  "/auth/otp/resend").permitAll()
 						.anyRequest().authenticated()
