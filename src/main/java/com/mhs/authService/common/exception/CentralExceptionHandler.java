@@ -120,8 +120,13 @@ public class CentralExceptionHandler {
 	}
 
 	@ExceptionHandler(RateLimitExceededException.class)
-	public ResponseEntity<String> handleRateLimitExceededException(RateLimitExceededException ex) {
-		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(ex.getMessage());
+	public ResponseEntity<ExceptionResponse> handleRateLimitExceededException(RateLimitExceededException exception, WebRequest request) {
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.TOO_MANY_REQUESTS.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(errorResponse);
 	}
 
 	@ExceptionHandler(MethodArgumentNotValidException.class)

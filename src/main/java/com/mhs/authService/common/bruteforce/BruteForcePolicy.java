@@ -22,4 +22,5 @@ package com.mhs.authService.common.bruteforce;
 public record BruteForcePolicy(int maxAttempts,
                                int lockDurationInMinutes,
                                String attemptKeyPrefix,
-                               String lockKeyPrefix){}
+                               String lockKeyPrefix) {
+}

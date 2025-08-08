@@ -16,16 +16,15 @@
 package com.mhs.authService.common.bruteforce;
 
 /**
- *
  * @author Milad Haghighat Shahedi
  */
 
 public interface BruteForce {
 
-    void onFailure(String identifier);
+	void onFailure(String identifier);
 
-    void onSuccess(String identifier);
+	void onSuccess(String identifier);
 
-    boolean isBlocked(String identifier);
+	boolean isBlocked(String identifier);
 
 }

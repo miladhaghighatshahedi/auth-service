@@ -4,21 +4,10 @@
     <property name="LOGS" value="./logs"/>
     <springProperty scope="context" name="application.name" source="spring.application.name"/>
 
-    <!-- Default appender for early logging -->
-    <appender name="EARLY_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %c{1} - %msg%n</pattern>
-        </encoder>
-    </appender>
-    <!-- Root logger for early messages -->
-    <root level="INFO">
-        <appender-ref ref="EARLY_CONSOLE" />
-    </root>
-
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
+        <encoder>
             <Pattern>%yellow(%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] ) %highlight(%-5level) %c{1} - %msg%n</Pattern>
-        </layout>
+        </encoder>
     </appender>
 
     <appender name="RollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -44,5 +33,8 @@
             <appender-ref ref="RollingFile"/>
         </root>
     </springProfile>
+
+    <logger name="org.hibernate.SQL" level="OFF"/>
+    <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="OFF"/>
 
 </configuration>

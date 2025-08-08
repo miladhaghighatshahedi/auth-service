@@ -16,9 +16,7 @@
 package com.mhs.authService.authentication.login.bruteforce;
 
 import com.mhs.authService.common.bruteforce.BruteForce;
-import com.mhs.authService.common.bruteforce.BruteForcePolicy;
-import com.mhs.authService.common.bruteforce.RedisBruteForce;
-import com.mhs.authService.common.cache.RedisCacheService;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -26,25 +24,14 @@ import org.springframework.stereotype.Service;
  */
 
 @Service("loginBruteForceService")
-class LoginBruteForceServiceImpl implements LoginBruteForceService{
+class LoginBruteForceServiceImpl implements LoginBruteForceService {
 
     private final BruteForce userBruteforce;
     private final BruteForce ipBruteForce;
 
-    public LoginBruteForceServiceImpl(RedisCacheService redisCacheService,
-                                      LoginBruteForceProperties properties) {
-
-        this.userBruteforce = new RedisBruteForce( redisCacheService,
-                                                   new BruteForcePolicy( properties.getMaxAttempts(),
-                                                                         properties.getBanDurationMinutes(),
-                                                                         properties.getUserAttemptKeyPrefix(),
-                                                                         properties.getUserBlockKeyPrefix()));
-
-        this.ipBruteForce = new RedisBruteForce( redisCacheService,
-                                                 new BruteForcePolicy( properties.getMaxAttempts(),
-                                                                       properties.getBanDurationMinutes(),
-                                                                       properties.getIpAttemptKeyPrefix(),
-                                                                       properties.getIpBlockKeyPrefix()));
+    public LoginBruteForceServiceImpl(@Qualifier("userBruteForce") BruteForce userBruteforce, @Qualifier("ipBruteForce") BruteForce ipBruteForce) {
+        this.userBruteforce = userBruteforce;
+        this.ipBruteForce = ipBruteForce;
     }
 
     public void onFailure(String ip, String username){
