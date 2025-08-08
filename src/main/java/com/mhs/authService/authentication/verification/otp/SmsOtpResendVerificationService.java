@@ -15,8 +15,8 @@
  */
 package com.mhs.authService.authentication.verification.otp;
 
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
 
 /**
  * @author Milad Haghighat Shahedi

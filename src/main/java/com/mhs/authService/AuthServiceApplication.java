@@ -30,7 +30,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class AuthServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AuthServiceApplication.class, args);
+		SpringApplication springApplication = new SpringApplication(AuthServiceApplication.class);
+		springApplication.setAdditionalProfiles("dev");
+		springApplication.run(args);
 	}
 
 }

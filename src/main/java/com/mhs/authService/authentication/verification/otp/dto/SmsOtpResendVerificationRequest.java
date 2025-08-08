@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.verification.otp.dto;
 
-import com.mhs.authService.infrastructure.validation.annotation.ValidMobile;
+import com.mhs.authService.common.validation.annotation.ValidMobile;
 
 /**
  * @author Milad Haghighat Shahedi

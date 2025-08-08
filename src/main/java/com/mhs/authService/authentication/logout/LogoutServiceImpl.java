@@ -17,9 +17,9 @@ package com.mhs.authService.authentication.logout;
 
 import com.mhs.authService.authentication.logout.dto.LogoutRequest;
 import com.mhs.authService.authentication.logout.dto.LogoutResponse;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprint;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprintExtractor;
-import com.mhs.authService.infrastructure.hash.TokenHashService;
+import com.mhs.authService.common.fingerprint.RequestFingerprint;
+import com.mhs.authService.common.fingerprint.RequestFingerprintExtractor;
+import com.mhs.authService.common.hash.TokenHashService;
 import com.mhs.authService.token.core.JwtTokenService;
 import com.mhs.authService.token.refresh.RefreshTokenService;
 import jakarta.servlet.http.HttpServletRequest;

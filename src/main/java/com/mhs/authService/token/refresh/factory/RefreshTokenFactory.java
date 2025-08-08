@@ -15,8 +15,9 @@
  */
 package com.mhs.authService.token.refresh.factory;
 
-import com.mhs.authService.user.User;
 import com.mhs.authService.token.refresh.RefreshToken;
+import com.mhs.authService.user.User;
+
 import java.time.Instant;
 
 /**

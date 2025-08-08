@@ -17,9 +17,9 @@ package com.mhs.authService.authentication.verification.email.controller;
 
 import com.mhs.authService.authentication.verification.email.EmailVerificationService;
 import com.mhs.authService.authentication.verification.email.dto.EmailVerificationResponse;
-import com.mhs.authService.infrastructure.ratelimit.annotation.RateLimit;
-import com.mhs.authService.infrastructure.ratelimit.enums.IdentifierType;
-import com.mhs.authService.infrastructure.validation.annotation.ValidJwtToken;
+import com.mhs.authService.common.ratelimit.annotation.RateLimit;
+import com.mhs.authService.common.ratelimit.enums.IdentifierType;
+import com.mhs.authService.common.validation.annotation.ValidJwtToken;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

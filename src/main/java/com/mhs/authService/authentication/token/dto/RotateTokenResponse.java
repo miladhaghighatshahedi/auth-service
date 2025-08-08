@@ -16,6 +16,7 @@
 package com.mhs.authService.authentication.token.dto;
 
 import org.springframework.security.core.GrantedAuthority;
+
 import java.time.Instant;
 import java.util.Set;
 

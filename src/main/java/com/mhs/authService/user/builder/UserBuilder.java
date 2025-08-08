@@ -16,12 +16,13 @@
 package com.mhs.authService.user.builder;
 
 import com.mhs.authService.iam.role.Role;
-import com.mhs.authService.infrastructure.encryption.CustomArgon2PasswordEncoder;
-import com.mhs.authService.infrastructure.identifier.UsernameTypeResolver;
+import com.mhs.authService.common.encryption.CustomArgon2PasswordEncoder;
+import com.mhs.authService.common.identifier.UsernameTypeResolver;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.enums.UsernameType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 

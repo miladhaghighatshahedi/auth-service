@@ -15,10 +15,10 @@
  */
 package com.mhs.authService.authentication.login.bruteforce;
 
-import com.mhs.authService.infrastructure.bruteforce.BruteForce;
-import com.mhs.authService.infrastructure.bruteforce.BruteForcePolicy;
-import com.mhs.authService.infrastructure.bruteforce.RedisBruteForce;
-import com.mhs.authService.infrastructure.cache.RedisCacheService;
+import com.mhs.authService.common.bruteforce.BruteForce;
+import com.mhs.authService.common.bruteforce.BruteForcePolicy;
+import com.mhs.authService.common.bruteforce.RedisBruteForce;
+import com.mhs.authService.common.cache.RedisCacheService;
 import org.springframework.stereotype.Service;
 
 /**

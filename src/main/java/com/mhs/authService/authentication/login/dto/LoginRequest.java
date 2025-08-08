@@ -15,8 +15,8 @@
  */
 package com.mhs.authService.authentication.login.dto;
 
-import com.mhs.authService.infrastructure.validation.annotation.ValidPassword;
-import com.mhs.authService.infrastructure.validation.annotation.ValidUsername;
+import com.mhs.authService.common.validation.annotation.ValidPassword;
+import com.mhs.authService.common.validation.annotation.ValidUsername;
 
 /**
  * @author Milad Haghighat Shahedi

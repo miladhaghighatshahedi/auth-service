@@ -16,9 +16,10 @@
 package com.mhs.authService.authentication.verification.email.ratelimit;
 
 import com.mhs.authService.authentication.verification.email.exception.EmailTooManyRequestException;
-import com.mhs.authService.infrastructure.cache.RedisCacheService;
+import com.mhs.authService.common.cache.RedisCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.time.Duration;
 
 /**

@@ -15,8 +15,9 @@
  */
 package com.mhs.authService.authentication.register.exception;
 
-import com.mhs.authService.infrastructure.validation.dto.ValidationError;
+import com.mhs.authService.common.validation.dto.ValidationError;
 import lombok.Getter;
+
 import java.util.List;
 
 /**

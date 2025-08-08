@@ -15,9 +15,9 @@
  */
 package com.mhs.authService.config;
 
-import com.mhs.authService.infrastructure.security.handler.CustomAccessDeniedHandler;
-import com.mhs.authService.infrastructure.security.jwt.JwtAuthenticationEntryPoint;
-import com.mhs.authService.infrastructure.security.jwt.JwtAuthenticationFilter;
+import com.mhs.authService.common.security.handler.CustomAccessDeniedHandler;
+import com.mhs.authService.common.security.jwt.JwtAuthenticationEntryPoint;
+import com.mhs.authService.common.security.jwt.JwtAuthenticationFilter;
 import com.mhs.authService.token.core.JwtTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

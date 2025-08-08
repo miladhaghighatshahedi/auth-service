@@ -15,11 +15,11 @@
  */
 package com.mhs.authService.authentication.verification.otp;
 
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
 import com.mhs.authService.authentication.verification.otp.ratelimit.SmsOtpResendVerificationRateLimiterService;
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
-import com.mhs.authService.infrastructure.verification.exception.UserAlreadyVerifiedException;
-import com.mhs.authService.infrastructure.verification.strategy.VerificationStrategyResolverService;
+import com.mhs.authService.common.verification.exception.UserAlreadyVerifiedException;
+import com.mhs.authService.common.verification.strategy.VerificationStrategyResolverService;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.UserService;
 import lombok.RequiredArgsConstructor;

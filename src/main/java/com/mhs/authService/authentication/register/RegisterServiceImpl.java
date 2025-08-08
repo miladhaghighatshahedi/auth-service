@@ -15,16 +15,16 @@
  */
 package com.mhs.authService.authentication.register;
 
+import com.mhs.authService.authentication.register.bruteforce.RegisterBruteForceService;
 import com.mhs.authService.authentication.register.dto.RegisterRequest;
 import com.mhs.authService.authentication.register.dto.RegisterResponse;
 import com.mhs.authService.authentication.register.exception.RegistrationException;
 import com.mhs.authService.authentication.register.validator.CredentialValidationService;
-import com.mhs.authService.authentication.register.bruteforce.RegisterBruteForceService;
-import com.mhs.authService.infrastructure.verification.dto.VerificationPayload;
-import com.mhs.authService.infrastructure.verification.strategy.VerificationStrategyResolverService;
 import com.mhs.authService.iam.role.Role;
 import com.mhs.authService.iam.role.RoleService;
-import com.mhs.authService.infrastructure.ip.IpAddressResolverService;
+import com.mhs.authService.common.ip.IpAddressResolverService;
+import com.mhs.authService.common.verification.dto.VerificationPayload;
+import com.mhs.authService.common.verification.strategy.VerificationStrategyResolverService;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.UserService;
 import com.mhs.authService.user.factory.UserFactory;
@@ -36,6 +36,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.TransactionException;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import java.util.Set;
 
 /**

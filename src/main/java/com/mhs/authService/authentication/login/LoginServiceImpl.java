@@ -17,10 +17,10 @@ package com.mhs.authService.authentication.login;
 
 import com.mhs.authService.authentication.login.dto.LoginRequest;
 import com.mhs.authService.authentication.login.dto.LoginResponse;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprint;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprintExtractor;
-import com.mhs.authService.infrastructure.hash.TokenHashService;
-import com.mhs.authService.infrastructure.security.auth.CustomUserDetails;
+import com.mhs.authService.common.fingerprint.RequestFingerprint;
+import com.mhs.authService.common.fingerprint.RequestFingerprintExtractor;
+import com.mhs.authService.common.hash.TokenHashService;
+import com.mhs.authService.common.security.auth.CustomUserDetails;
 import com.mhs.authService.token.core.JwtTokenProperties;
 import com.mhs.authService.token.core.JwtTokenService;
 import com.mhs.authService.token.refresh.RefreshToken;
@@ -29,11 +29,14 @@ import com.mhs.authService.token.refresh.factory.RefreshTokenFactory;
 import com.mhs.authService.user.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -45,6 +48,8 @@ import java.util.HashSet;
 @Service("loginService")
 @RequiredArgsConstructor
 class LoginServiceImpl implements LoginService {
+
+	private static final Logger logger = LoggerFactory.getLogger("LoginServiceImpl");
 
 	private final AuthenticationManager authenticationManager;
 	private final RequestFingerprintExtractor requestFingerprintExtractor;
@@ -58,6 +63,8 @@ class LoginServiceImpl implements LoginService {
 
 	@Override
 	public LoginResponse login(LoginRequest loginRequest, HttpServletRequest httpServletRequest) {
+
+		logger.info("entering login method");
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken( loginRequest.username(), loginRequest.password())
@@ -85,13 +92,14 @@ class LoginServiceImpl implements LoginService {
 		transactionTemplate.executeWithoutResult(status -> {
 			refreshTokenService.saveRefreshToken(user, refreshTokenEntity);
 		});
-
+		logger.info("exiting login method");
 		return new LoginResponse( accessToken,
 								  refreshToken,
 								  Instant.now().plus(jwtTokenProperties.getAccessTokenExpiryHours(), ChronoUnit.HOURS),
 								  loginRequest.username(),
 								  new HashSet<>(authentication.getAuthorities()),
 								  "User logged successfully.");
+
 	}
 
 }

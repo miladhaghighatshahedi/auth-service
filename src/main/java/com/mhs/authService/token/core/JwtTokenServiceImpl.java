@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.token.core;
 
-import com.mhs.authService.infrastructure.hash.TokenHashService;
+import com.mhs.authService.common.hash.TokenHashService;
 import com.mhs.authService.token.dto.RefreshTokenCarrier;
 import com.mhs.authService.token.refresh.RefreshTokenService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;

@@ -17,8 +17,8 @@ package com.mhs.authService.authentication.verification.otp.controller;
 
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
-import com.mhs.authService.infrastructure.ratelimit.annotation.RateLimit;
-import com.mhs.authService.infrastructure.ratelimit.enums.IdentifierType;
+import com.mhs.authService.common.ratelimit.annotation.RateLimit;
+import com.mhs.authService.common.ratelimit.enums.IdentifierType;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

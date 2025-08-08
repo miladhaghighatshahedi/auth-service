@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.verification.email.dto;
 
-import com.mhs.authService.infrastructure.validation.annotation.ValidEmail;
+import com.mhs.authService.common.validation.annotation.ValidEmail;
 
 /**
  * @author Milad Haghighat Shahedi

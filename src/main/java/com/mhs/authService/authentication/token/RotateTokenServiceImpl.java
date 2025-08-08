@@ -17,9 +17,9 @@ package com.mhs.authService.authentication.token;
 
 import com.mhs.authService.authentication.token.dto.RotateTokenRequest;
 import com.mhs.authService.authentication.token.dto.RotateTokenResponse;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprint;
-import com.mhs.authService.infrastructure.fingerprint.RequestFingerprintExtractor;
-import com.mhs.authService.infrastructure.hash.TokenHashService;
+import com.mhs.authService.common.fingerprint.RequestFingerprint;
+import com.mhs.authService.common.fingerprint.RequestFingerprintExtractor;
+import com.mhs.authService.common.hash.TokenHashService;
 import com.mhs.authService.token.core.JwtTokenProperties;
 import com.mhs.authService.token.core.JwtTokenService;
 import com.mhs.authService.token.refresh.RefreshToken;
@@ -33,6 +33,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;

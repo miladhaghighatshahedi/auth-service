@@ -17,11 +17,12 @@ package com.mhs.authService.authentication.register.validator;
 
 import com.mhs.authService.authentication.register.dto.RegisterRequest;
 import com.mhs.authService.authentication.register.exception.CredentialValidationException;
-import com.mhs.authService.infrastructure.validation.dto.ValidationError;
-import com.mhs.authService.infrastructure.validation.validator.password.PasswordValidatorService;
-import com.mhs.authService.infrastructure.validation.validator.username.UsernameValidatorService;
+import com.mhs.authService.common.validation.dto.ValidationError;
+import com.mhs.authService.common.validation.validator.password.PasswordValidatorService;
+import com.mhs.authService.common.validation.validator.username.UsernameValidatorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.List;
 

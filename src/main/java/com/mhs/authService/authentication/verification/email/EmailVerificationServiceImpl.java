@@ -17,8 +17,8 @@ package com.mhs.authService.authentication.verification.email;
 
 import com.mhs.authService.authentication.verification.email.dto.EmailVerificationResponse;
 import com.mhs.authService.authentication.verification.email.exception.EmailVerificationException;
-import com.mhs.authService.infrastructure.verification.jwt.JwtVerificationTokenGenerator;
-import com.mhs.authService.infrastructure.verification.exception.UserAlreadyVerifiedException;
+import com.mhs.authService.common.verification.exception.UserAlreadyVerifiedException;
+import com.mhs.authService.common.verification.jwt.JwtVerificationTokenGenerator;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.UserService;
 import lombok.RequiredArgsConstructor;
