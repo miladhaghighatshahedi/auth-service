@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.register;
+package com.mhs.authService.authentication.verification.otp.service;
 
-import com.mhs.authService.authentication.register.dto.RegisterRequest;
-import com.mhs.authService.authentication.register.dto.RegisterResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationRequest;
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationResponse;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface RegisterService {
+public interface SmsOtpVerificationService {
 
-	RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest);
+	SmsOtpVerificationResponse verify(SmsOtpVerificationRequest smsOtpVerificationRequest);
 
 }

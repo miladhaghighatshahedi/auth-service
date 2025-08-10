@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.verification.email.controller;
 
-import com.mhs.authService.authentication.verification.email.EmailVerificationService;
+import com.mhs.authService.authentication.verification.email.service.EmailVerificationService;
 import com.mhs.authService.authentication.verification.email.dto.EmailVerificationResponse;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;
 import com.mhs.authService.common.ratelimit.enums.IdentifierType;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @Validated
 @RequiredArgsConstructor
-public class EmailVerificationController {
+class EmailVerificationController {
 
 	private final EmailVerificationService verifyEmailService;
 

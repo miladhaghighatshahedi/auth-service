@@ -31,7 +31,13 @@ class IpIdentifierResolver implements IdentifierResolver{
 	@Override
 	public String resolve() {
 
-		HttpServletRequest httpServletRequest = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+
+		if (requestAttributes == null) {
+			throw new IllegalStateException("error: No request bound to current thread");
+		}
+
+		HttpServletRequest httpServletRequest = requestAttributes.getRequest();
 
 		String xfHeader = httpServletRequest.getHeader("X-Forwarded-For");
 		return (xfHeader != null && !xfHeader.isBlank()) ? xfHeader.split(",")[0] : httpServletRequest.getRemoteAddr();

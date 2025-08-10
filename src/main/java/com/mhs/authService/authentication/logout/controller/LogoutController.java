@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.logout.controller;
 
-import com.mhs.authService.authentication.logout.LogoutService;
+import com.mhs.authService.authentication.logout.service.LogoutService;
 import com.mhs.authService.authentication.logout.dto.LogoutRequest;
 import com.mhs.authService.authentication.logout.dto.LogoutResponse;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;

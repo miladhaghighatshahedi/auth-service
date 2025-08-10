@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.logout;
+package com.mhs.authService.authentication.register.service;
 
-import com.mhs.authService.authentication.logout.dto.LogoutRequest;
-import com.mhs.authService.authentication.logout.dto.LogoutResponse;
+import com.mhs.authService.authentication.register.dto.RegisterRequest;
+import com.mhs.authService.authentication.register.dto.RegisterResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface LogoutService {
+public interface RegisterService {
 
-	LogoutResponse logout(LogoutRequest logoutRequest, HttpServletRequest httpServletRequest);
+	RegisterResponse register(RegisterRequest registerRequest, HttpServletRequest httpServletRequest);
 
 }

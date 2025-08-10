@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.token.controller;
 
-import com.mhs.authService.authentication.token.RotateTokenService;
+import com.mhs.authService.authentication.token.service.RotateTokenService;
 import com.mhs.authService.authentication.token.dto.RotateTokenRequest;
 import com.mhs.authService.authentication.token.dto.RotateTokenResponse;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @Controller
 @RequiredArgsConstructor
-public class RotateTokenController {
+class RotateTokenController {
 
 	private final RotateTokenService rotateTokenService;
 

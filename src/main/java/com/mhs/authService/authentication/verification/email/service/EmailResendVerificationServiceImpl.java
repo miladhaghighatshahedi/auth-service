@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.email;
+package com.mhs.authService.authentication.verification.email.service;
 
 import com.mhs.authService.authentication.verification.email.dto.EmailResendVerificationRequest;
 import com.mhs.authService.authentication.verification.email.dto.EmailResendVerificationResponse;

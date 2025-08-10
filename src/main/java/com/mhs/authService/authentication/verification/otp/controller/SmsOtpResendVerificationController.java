@@ -17,6 +17,7 @@ package com.mhs.authService.authentication.verification.otp.controller;
 
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
+import com.mhs.authService.authentication.verification.otp.service.SmsOtpResendVerificationService;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;
 import com.mhs.authService.common.ratelimit.enums.IdentifierType;
 import jakarta.validation.Valid;
@@ -34,9 +35,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @Controller
 @RequiredArgsConstructor
-public class SmsOtpResendVerificationController {
+class SmsOtpResendVerificationController {
 
-	private final com.mhs.authService.authentication.verification.otp.SmsOtpResendVerificationService SmsOtpResendVerificationService;
+	private final SmsOtpResendVerificationService SmsOtpResendVerificationService;
 
 	@RateLimit( key = "SMS_OTP_RESEND_VERIFICATION_",
 			maxRequests = 3,

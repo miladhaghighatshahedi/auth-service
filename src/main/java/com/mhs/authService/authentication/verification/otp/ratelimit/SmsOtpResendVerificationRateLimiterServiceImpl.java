@@ -38,7 +38,7 @@ class SmsOtpResendVerificationRateLimiterServiceImpl implements SmsOtpResendVeri
 
 		String coolDownKey = properties.getSmsOtpCoolDownPrefix() + mobile;
 
-		if(Boolean.TRUE.equals(redisCacheService.exists(coolDownKey))){
+		if(redisCacheService.exists(coolDownKey)){
 			throw new SmsOtpTooManyRequestException("error: Sms Otp temporarily disabled, try in the next few seconds.");
 		}
 

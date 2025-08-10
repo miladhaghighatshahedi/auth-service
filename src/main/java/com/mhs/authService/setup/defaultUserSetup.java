@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.setup;
 
-import com.mhs.authService.authentication.register.RegisterService;
+import com.mhs.authService.authentication.register.service.RegisterService;
 import com.mhs.authService.authentication.register.dto.RegisterRequest;
 import com.mhs.authService.iam.permission.PermissionService;
 import jakarta.servlet.http.HttpServletRequest;

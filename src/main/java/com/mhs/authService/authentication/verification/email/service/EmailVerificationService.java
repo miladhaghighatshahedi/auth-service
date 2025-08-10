@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.otp;
+package com.mhs.authService.authentication.verification.email.service;
 
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationRequest;
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationResponse;
+import com.mhs.authService.authentication.verification.email.dto.EmailVerificationResponse;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface SmsOtpVerificationService {
+public interface EmailVerificationService {
 
-	SmsOtpVerificationResponse verify(SmsOtpVerificationRequest smsOtpVerificationRequest);
+	EmailVerificationResponse verify(String token);
 
 }

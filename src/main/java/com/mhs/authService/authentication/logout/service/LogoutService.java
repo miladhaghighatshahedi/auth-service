@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.email;
+package com.mhs.authService.authentication.logout.service;
 
-import com.mhs.authService.authentication.verification.email.dto.EmailResendVerificationRequest;
-import com.mhs.authService.authentication.verification.email.dto.EmailResendVerificationResponse;
+import com.mhs.authService.authentication.logout.dto.LogoutRequest;
+import com.mhs.authService.authentication.logout.dto.LogoutResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface EmailResendVerificationService {
+public interface LogoutService {
 
-	EmailResendVerificationResponse resend(EmailResendVerificationRequest emailResendVerificationRequest);
+	LogoutResponse logout(LogoutRequest logoutRequest, HttpServletRequest httpServletRequest);
 
 }

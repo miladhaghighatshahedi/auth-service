@@ -293,4 +293,14 @@ public class CentralExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
 	}
 
+	@ExceptionHandler(IllegalStateException.class)
+	public ResponseEntity<ExceptionResponse> handleIllegalStateException(IllegalStateException exception, WebRequest request) {
+		ExceptionResponse errorResponse = new ExceptionResponse( exception.getMessage(),
+				LocalDateTime.now(),
+				request.getDescription(false),
+				HttpStatus.INTERNAL_SERVER_ERROR.value(),
+				false);
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+	}
+
 }

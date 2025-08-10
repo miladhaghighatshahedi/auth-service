@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.email;
+package com.mhs.authService.authentication.verification.otp.service;
 
-import com.mhs.authService.authentication.verification.email.dto.EmailVerificationResponse;
-import com.mhs.authService.authentication.verification.email.exception.EmailVerificationException;
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationRequest;
+import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationResponse;
+import com.mhs.authService.authentication.verification.otp.exception.SmsOtpVerificationException;
 import com.mhs.authService.common.verification.exception.UserAlreadyVerifiedException;
-import com.mhs.authService.common.verification.jwt.JwtVerificationTokenGenerator;
+import com.mhs.authService.common.verification.otp.SmsOtpVerificationGenerator;
 import com.mhs.authService.user.User;
 import com.mhs.authService.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -31,42 +32,35 @@ import org.springframework.transaction.support.TransactionTemplate;
  * @author Milad Haghighat Shahedi
  */
 
-@Service("emailVerificationService")
+@Service("SmsOtpVerificationService")
 @RequiredArgsConstructor
-class EmailVerificationServiceImpl implements EmailVerificationService {
+class SmsOtpVerificationServiceImpl implements SmsOtpVerificationService {
 
-	private final JwtVerificationTokenGenerator jwtVerificationTokenGenerator;
 	private final UserService userService;
 	private final TransactionTemplate transactionTemplate;
+	private final SmsOtpVerificationGenerator smsOtpVerificationGenerator;
 
 	@Override
-	public EmailVerificationResponse verify(String token) {
+	public SmsOtpVerificationResponse verify(SmsOtpVerificationRequest smsOtpVerificationRequest) {
 
-		if (token == null || token.isBlank()) {
-			throw new EmailVerificationException("error: Token is missing or blank.");
-		}
-
-		jwtVerificationTokenGenerator.verify(token);
-		String extractUsername = jwtVerificationTokenGenerator.extractUsername(token);
-
-		User user = userService.findByUsername(extractUsername);
+		User user = userService.findByUsername(smsOtpVerificationRequest.mobile());
 		if(user.isEnabled()){
-			throw new UserAlreadyVerifiedException("error: user already verified.");
+			throw new UserAlreadyVerifiedException("user already verified.");
 		}
 
 		try {
 			return transactionTemplate.execute(status -> {
 				try {
-					userService.enableByUsername(extractUsername);
-					return new EmailVerificationResponse(extractUsername, "user successfully verified!");
+					userService.enableByUsername(smsOtpVerificationRequest.mobile());
+					smsOtpVerificationGenerator.verify(smsOtpVerificationRequest.mobile(), smsOtpVerificationRequest.otpCode());
+					return new SmsOtpVerificationResponse(smsOtpVerificationRequest.mobile(), "user successfully verified!");
 				} catch (DataAccessException e) {
-					throw new EmailVerificationException("error: Database error occurred during verification. Please try again later.");
+					throw new SmsOtpVerificationException("error: Database error occurred during verification. Please try again later.");
 				}
 			});
 		} catch (TransactionException e) {
-			throw new EmailVerificationException("Error: Unable to verify user due to transaction failure during verification..");
+			throw new SmsOtpVerificationException("Error: Unable to verify user due to transaction failure.");
 		}
 
 	}
-
 }

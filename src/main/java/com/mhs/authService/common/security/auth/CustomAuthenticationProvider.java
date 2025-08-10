@@ -62,6 +62,10 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 					(CustomUserDetails) userDetailsService.loadUserByUsername(username)
 			);
 
+			if (userDetails == null || userDetails.getPassword() == null) {
+				throw new BadCredentialsException("Invalid username or password");
+			}
+
 			String encryptedPassword = userDetails.getPassword();
 
 			if(!passwordEncoder.matches(rawPassword,encryptedPassword)){

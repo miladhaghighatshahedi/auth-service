@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.logout;
+package com.mhs.authService.authentication.logout.service;
 
 import com.mhs.authService.authentication.logout.dto.LogoutRequest;
 import com.mhs.authService.authentication.logout.dto.LogoutResponse;

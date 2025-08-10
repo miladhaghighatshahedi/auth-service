@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.verification.otp;
+package com.mhs.authService.authentication.login.service;
 
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationRequest;
-import com.mhs.authService.authentication.verification.otp.dto.SmsOtpResendVerificationResponse;
+import com.mhs.authService.authentication.login.dto.LoginRequest;
+import com.mhs.authService.authentication.login.dto.LoginResponse;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Milad Haghighat Shahedi
  */
 
-public interface SmsOtpResendVerificationService {
+public interface LoginService {
 
-	SmsOtpResendVerificationResponse resend(SmsOtpResendVerificationRequest smsOtpResendVerificationRequest);
+	LoginResponse login(LoginRequest loginRequest, HttpServletRequest httpServletRequest);
 
 }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mhs.authService.authentication.token;
+package com.mhs.authService.authentication.token.service;
 
 import com.mhs.authService.authentication.token.dto.RotateTokenRequest;
 import com.mhs.authService.authentication.token.dto.RotateTokenResponse;

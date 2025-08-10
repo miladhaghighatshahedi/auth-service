@@ -38,7 +38,7 @@ class EmailResendVerificationRateLimiterServiceImpl implements EmailResendVerifi
 
 		String coolDownKey = properties.getEmailCoolDownPrefix() + email;
 
-		if(Boolean.TRUE.equals(redisCacheService.exists(coolDownKey))){
+		if(redisCacheService.exists(coolDownKey)){
 			throw new EmailTooManyRequestException("error: email resend temporarily disabled, try in the next few seconds.");
 		}
 

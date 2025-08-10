@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.verification.otp.controller;
 
-import com.mhs.authService.authentication.verification.otp.SmsOtpVerificationService;
+import com.mhs.authService.authentication.verification.otp.service.SmsOtpVerificationService;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationRequest;
 import com.mhs.authService.authentication.verification.otp.dto.SmsOtpVerificationResponse;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;
@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @Controller
 @RequiredArgsConstructor
-public class SmsOtpVerificationController {
+class SmsOtpVerificationController {
 
 	private final SmsOtpVerificationService smsOtpVerificationService;
 

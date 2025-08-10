@@ -148,15 +148,27 @@ class JwtTokenServiceImpl implements JwtTokenService{
     }
 
     private void validateRefreshTokenExpiry(Jwt decodedJwt){
-        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
-            throw new BadCredentialsException("error: Refresh token is expired or revoked!");
-        }
+	    Instant expiresAt = decodedJwt.getExpiresAt();
+
+	    if (expiresAt == null) {
+		    throw new BadCredentialsException("error: Access token has no expiry claim!");
+	    }
+
+	    if (expiresAt.isBefore(Instant.now())) {
+		    throw new BadCredentialsException("error: Refresh token is expired!");
+	    }
     }
 
     private void validateAccessTokenExpiry(Jwt decodedJwt){
-        if (decodedJwt.getExpiresAt().isBefore(Instant.now())) {
-            throw new BadCredentialsException("error: Access token is expired!");
-        }
+	    Instant expiresAt = decodedJwt.getExpiresAt();
+
+	    if (expiresAt == null) {
+		    throw new BadCredentialsException("error: Access token has no expiry claim!");
+	    }
+
+	    if (expiresAt.isBefore(Instant.now())) {
+		    throw new BadCredentialsException("error: Access token is expired!");
+	    }
     }
 
     private void validateAccessTokenIssuer(Jwt decodedJwt){

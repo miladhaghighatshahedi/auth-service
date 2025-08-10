@@ -15,7 +15,7 @@
  */
 package com.mhs.authService.authentication.login.controller;
 
-import com.mhs.authService.authentication.login.LoginService;
+import com.mhs.authService.authentication.login.service.LoginService;
 import com.mhs.authService.authentication.login.dto.LoginRequest;
 import com.mhs.authService.authentication.login.dto.LoginResponse;
 import com.mhs.authService.common.ratelimit.annotation.RateLimit;
@@ -36,7 +36,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @Controller
 @RequiredArgsConstructor
-public class LoginController {
+class LoginController {
 
 	private final LoginService loginService;
 
